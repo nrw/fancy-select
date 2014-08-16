@@ -90,7 +90,31 @@ test('backspace removes', function (t) {
   })
 })
 
-test('typing filters', function (t) {
+test('typing filters options', function (t) {
+  input = el.querySelector('input')
+  input.value = 'c'
+  input.dispatchEvent(event('input', {bubbles: true}))
 
-  t.end()
+  raf(function () {
+    options = document.querySelectorAll('.option')
+    t.equal(options.length, 1)
+    t.equal(options[0].innerText, 'C')
+    selected = el.querySelectorAll('.selected')
+    t.equal(selected.length, 1)
+    t.equal(selected[0].innerText, 'A')
+
+    input.dispatchEvent(event('focus', {bubbles: true}))
+
+    raf(function () {
+      input.dispatchEvent(event('keydown', {
+        keyCode: BACKSPACE,
+        bubbles: true
+      }))
+
+      selected = el.querySelectorAll('.selected')
+      t.equal(selected.length, 1, 'backspace does not delete when query is set')
+      t.equal(selected[0].innerText, 'A')
+      t.end()
+    })
+  })
 })

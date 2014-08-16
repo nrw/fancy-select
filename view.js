@@ -19,12 +19,19 @@ function render (state) {
         }, v.title)
       }),
       h('input', {
+        type: 'text',
+        name: 'query',
         value: state.typing,
+        autocomplete: 'off',
         className: styles.input.className,
         'ev-focus': mercury.event(state.events.dropdown, true),
         'ev-event': mutableFocus(),
-        'ev-input': mercury.changeEvent(state.events.input),
-        'ev-keydown': mercury.keyEvent(state.events.backspace, BACKSPACE)
+        'ev-input': mercury.valueEvent(state.events.input, {
+          preventDefault: false
+        }),
+        'ev-keydown': mercury.keyEvent(state.events.backspace, BACKSPACE, {
+          preventDefault: false
+        })
       })
     ]),
     state.isOpen ? h('div.dropdown', {
