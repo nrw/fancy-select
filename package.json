@@ -1,0 +1,23 @@
+{
+  "name": "fancy-select",
+  "description": "fancy select",
+  "version": "0.0.0",
+  "repository": {
+    "url": "nrw/fancy-select"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "run-browser test/index.js"
+  },
+  "dependencies": {
+    "mercury": "^6.0.1",
+    "rcss": "^0.1.3"
+  },
+  "devDependencies": {
+    "global": "^4.2.1",
+    "synthetic-dom-events": "^0.2.2",
+    "tape": "^2.14.0",
+    "raf": "^2.0.2"
+  }
+}
