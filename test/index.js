@@ -31,7 +31,9 @@ test('click select', function (t) {
 
   RCSS.injectAll()
 
-  mercury.app(document.body, comp.state, FancySelect.render)
+  var div = document.createElement('div')
+  document.body.insertBefore(div, document.body.childNodes[0])
+  mercury.app(div, comp.state, FancySelect.render)
 
   el = document.querySelector('.fancy-select')
 
