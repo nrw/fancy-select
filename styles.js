@@ -9,7 +9,8 @@ module.exports = {
     borderWidth: 0,
     background: 'transparent',
     outline: 0,
-    minHeight: '2.8em'
+    minHeight: '2.8em',
+    minWidth: '5em'
   }),
   selected: RCSS.registerClass({
     borderWidth: '10px',
@@ -18,10 +19,16 @@ module.exports = {
     margin: '0.2em',
     background: '#faa'
   }),
+  allSelected: RCSS.registerClass({
+    display: 'inline-block'
+  }),
   option: RCSS.registerClass({
     borderBottom: '1px solid #eee',
     padding: '0.4em 0.8em',
     display: 'block',
     margin: 0
+  }),
+  focused: RCSS.registerClass({
+    background: '#fffafa'
   })
 }

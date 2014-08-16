@@ -1,4 +1,5 @@
 var mercury = require('mercury')
+var document = require('global/document')
 
 FancySelect.render = require('./view')
 
@@ -13,7 +14,8 @@ function FancySelect (options) {
     backspace: mercury.input(),
     select: mercury.input(),
     dropdown: mercury.input(),
-    input: mercury.input()
+    input: mercury.input(),
+    refocus: mercury.input()
   }
 
   events.backspace(function () {
@@ -37,6 +39,19 @@ function FancySelect (options) {
 
   events.dropdown(function (open) {
     state.isOpen.set(open)
+  })
+
+  events.refocus(function (data) {
+    var delta = data.current + data.change
+    if (delta < 0) {
+      delta = 0
+    }
+
+    if (delta > data.available.length - 1) {
+      delta = data.available.length - 1
+    }
+
+    state.focused.set(delta)
   })
 
   var opts = mercury.value(options.options)
@@ -63,13 +78,23 @@ function FancySelect (options) {
     }
   })
 
+  // refocus when available changes
+  available(function (val) {
+    events.refocus({
+      change: 0,
+      current: state.focused(),
+      available: val
+    })
+  })
+
   var state = mercury.struct({
     events: events,
     options: opts,
     value: value,
     isOpen: mercury.value(false),
     query: query,
-    available: available
+    available: available,
+    focused: mercury.value(0)
   })
 
   return {
