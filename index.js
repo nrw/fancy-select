@@ -6,12 +6,22 @@ module.exports = FancySelect
 
 function FancySelect (options) {
   var events = {
-    keyPress: mercury.input(),
+    backspace: mercury.input(),
     select: mercury.input(),
-    dropdown: mercury.input()
+    dropdown: mercury.input(),
+    input: mercury.input()
   }
 
-  events.keyPress(function (argument) {
+  events.backspace(function () {
+    if (!state.typing()) {
+      var val = value()
+      val.pop()
+      value.set(val)
+    }
+  })
+
+  events.input(function (val) {
+    state.typing.set(val)
   })
 
   events.select(function (opt) {

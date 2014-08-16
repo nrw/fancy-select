@@ -1,8 +1,10 @@
 var mercury = require('mercury')
 var h = mercury.h
 var styles = require('./styles')
+var mutableFocus = require('./mutable-focus')
 
 var ENTER = 13
+var BACKSPACE = 8
 
 module.exports = render
 
@@ -17,8 +19,12 @@ function render (state) {
         }, v.title)
       }),
       h('input', {
+        value: state.typing,
         className: styles.input.className,
-        'ev-focus': mercury.event(state.events.dropdown, true)
+        'ev-focus': mercury.event(state.events.dropdown, true),
+        'ev-event': mutableFocus(),
+        'ev-input': mercury.changeEvent(state.events.input),
+        'ev-keydown': mercury.keyEvent(state.events.backspace, BACKSPACE)
       })
     ]),
     state.isOpen ? h('div.dropdown', {

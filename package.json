@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "mercury": "^6.0.1",
+    "next-tick": "^0.2.2",
     "rcss": "^0.1.3"
   },
   "devDependencies": {

@@ -8,7 +8,8 @@ module.exports = {
   input: RCSS.registerClass({
     borderWidth: 0,
     background: 'transparent',
-    outline: 0
+    outline: 0,
+    minHeight: '2.8em'
   }),
   selected: RCSS.registerClass({
     borderWidth: '10px',

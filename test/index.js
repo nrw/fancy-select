@@ -4,11 +4,15 @@ var raf = require('raf')
 var test = require('tape')
 var document = require('global/document')
 var event = require('synthetic-dom-events')
+window.e = event
+var BACKSPACE = 8
 
 var FancySelect = require('../')
 
+var comp, el, selected, input, options
+
 test('click select', function (t) {
-  var comp = FancySelect({
+  comp = FancySelect({
     options: [{
       id: 'a',
       title: 'A'
@@ -28,8 +32,6 @@ test('click select', function (t) {
   RCSS.injectAll()
 
   mercury.app(document.body, comp.state, FancySelect.render)
-
-  var el, selected, input, options
 
   el = document.querySelector('.fancy-select')
 
@@ -63,4 +65,32 @@ test('click select', function (t) {
       t.end()
     })
   })
+})
+
+test('backspace removes', function (t) {
+  input = el.querySelector('input')
+  input.dispatchEvent(event('focus', {bubbles: true}))
+
+  raf(function () {
+    input.dispatchEvent(event('keydown', {
+      keyCode: BACKSPACE,
+      bubbles: true
+    }))
+
+    raf(function () {
+      options = document.querySelectorAll('.option')
+      t.equal(options.length, 2)
+      t.equal(options[0].innerText, 'B')
+      t.equal(options[1].innerText, 'C')
+      selected = el.querySelectorAll('.selected')
+      t.equal(selected.length, 1)
+      t.equal(selected[0].innerText, 'A')
+      t.end()
+    })
+  })
+})
+
+test('typing filters', function (t) {
+
+  t.end()
 })
