@@ -3,14 +3,16 @@ var RCSS = require('rcss')
 module.exports = {
   background: RCSS.registerClass({
     border: '0px solid black',
-    background: '#fee'
+    background: '#fee',
+    width: '100%'
   }),
   input: RCSS.registerClass({
     borderWidth: 0,
     background: 'transparent',
     outline: 0,
     minHeight: '2.8em',
-    minWidth: '5em'
+    minWidth: '5em',
+    maxWidth: '100%'
   }),
   selected: RCSS.registerClass({
     borderWidth: '10px',
