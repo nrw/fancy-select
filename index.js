@@ -23,11 +23,14 @@ function FancySelect (options) {
 
   events.close(function (close) {
     if (close) {
+      console.log('set')
       willClose = setTimeout(function () {
         events.dropdown(false)
-      }, 50)
-    } else if (willClose) {
+      }, 150)
+    } else {
       clearTimeout(willClose)
+      events.dropdown(true)
+      willClose = null
     }
   })
 
@@ -44,11 +47,11 @@ function FancySelect (options) {
   })
 
   events.select(function (opt) {
+    events.close(false)
     var val = value()
     val.push(opt)
     value.set(val)
     query.set('')
-    events.close()
   })
 
   events.dropdown(function (open) {
