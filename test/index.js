@@ -43,7 +43,7 @@ test('click select', function (t) {
 
   selected = el.querySelectorAll('.selected')
   t.equal(selected.length, 1)
-  t.equal(selected[0].innerText, 'A')
+  t.equal(selected[0].innerHTML, 'A')
 
   input = el.querySelector('input')
   input.dispatchEvent(event('focus', {bubbles: true}))
@@ -54,20 +54,20 @@ test('click select', function (t) {
     options = document.querySelectorAll('.option')
 
     t.equal(options.length, 2)
-    t.equal(options[0].innerText, 'B')
-    t.equal(options[1].innerText, 'C')
+    t.equal(options[0].innerHTML, 'B')
+    t.equal(options[1].innerHTML, 'C')
 
     options[1].dispatchEvent(event('click', {bubbles: true}))
 
     raf(function () {
       options = document.querySelectorAll('.option')
       t.equal(options.length, 1)
-      t.equal(options[0].innerText, 'B')
+      t.equal(options[0].innerHTML, 'B')
 
       selected = el.querySelectorAll('.selected')
       t.equal(selected.length, 2)
-      t.equal(selected[0].innerText, 'A')
-      t.equal(selected[1].innerText, 'C')
+      t.equal(selected[0].innerHTML, 'A')
+      t.equal(selected[1].innerHTML, 'C')
       t.end()
     })
   })
@@ -86,11 +86,11 @@ test('backspace removes', function (t) {
     raf(function () {
       options = document.querySelectorAll('.option')
       t.equal(options.length, 2)
-      t.equal(options[0].innerText, 'B')
-      t.equal(options[1].innerText, 'C')
+      t.equal(options[0].innerHTML, 'B')
+      t.equal(options[1].innerHTML, 'C')
       selected = el.querySelectorAll('.selected')
       t.equal(selected.length, 1)
-      t.equal(selected[0].innerText, 'A')
+      t.equal(selected[0].innerHTML, 'A')
       t.end()
     })
   })
@@ -104,10 +104,10 @@ test('typing filters options', function (t) {
   raf(function () {
     options = document.querySelectorAll('.option')
     t.equal(options.length, 1)
-    t.equal(options[0].innerText, 'C')
+    t.equal(options[0].innerHTML, 'C')
     selected = el.querySelectorAll('.selected')
     t.equal(selected.length, 1)
-    t.equal(selected[0].innerText, 'A')
+    t.equal(selected[0].innerHTML, 'A')
 
     input.dispatchEvent(event('focus', {bubbles: true}))
 
@@ -119,7 +119,7 @@ test('typing filters options', function (t) {
 
       selected = el.querySelectorAll('.selected')
       t.equal(selected.length, 1, 'backspace does not delete when query is set')
-      t.equal(selected[0].innerText, 'A')
+      t.equal(selected[0].innerHTML, 'A')
       t.end()
     })
   })
@@ -138,10 +138,10 @@ test('arrow through dropdown', function (t) {
   raf(function () {
     options = document.querySelectorAll('.option')
     t.equal(options.length, 3)
-    t.equal(options[0].innerText, 'A')
-    t.equal(options[1].innerText, 'B')
-    t.equal(options[2].innerText, 'C')
-    t.equal(document.querySelector('.focused').innerText, 'A')
+    t.equal(options[0].innerHTML, 'A')
+    t.equal(options[1].innerHTML, 'B')
+    t.equal(options[2].innerHTML, 'C')
+    t.equal(document.querySelector('.focused').innerHTML, 'A')
 
     input.dispatchEvent(event('keydown', {keyCode: BACKSPACE}))
 
@@ -150,18 +150,18 @@ test('arrow through dropdown', function (t) {
     input.dispatchEvent(event('keydown', {keyCode: UP}))
 
     raf(function () {
-      t.equal(document.querySelector('.focused').innerText, 'A')
+      t.equal(document.querySelector('.focused').innerHTML, 'A')
       input.dispatchEvent(event('keydown', {keyCode: DOWN}))
       raf(function () {
-        t.equal(document.querySelector('.focused').innerText, 'B')
+        t.equal(document.querySelector('.focused').innerHTML, 'B')
         input.dispatchEvent(event('keydown', {keyCode: DOWN}))
 
         raf(function () {
-          t.equal(document.querySelector('.focused').innerText, 'C')
+          t.equal(document.querySelector('.focused').innerHTML, 'C')
           input.dispatchEvent(event('keydown', {keyCode: DOWN}))
 
           raf(function () {
-            t.equal(document.querySelector('.focused').innerText, 'C')
+            t.equal(document.querySelector('.focused').innerHTML, 'C')
             t.end()
           })
         })
@@ -182,7 +182,7 @@ test('select with enter', function (t) {
     raf(function () {
       selected = el.querySelectorAll('.selected')
       t.equal(selected.length, 1)
-      t.equal(selected[0].innerText, 'B')
+      t.equal(selected[0].innerHTML, 'B')
 
       input = el.querySelector('input')
       input.dispatchEvent(event('keydown', {keyCode: ENTER}))
@@ -190,8 +190,8 @@ test('select with enter', function (t) {
       raf(function () {
         selected = el.querySelectorAll('.selected')
         t.equal(selected.length, 2)
-        t.equal(selected[0].innerText, 'B')
-        t.equal(selected[1].innerText, 'C')
+        t.equal(selected[0].innerHTML, 'B')
+        t.equal(selected[1].innerHTML, 'C')
 
         input = el.querySelector('input')
         input.dispatchEvent(event('keydown', {keyCode: ENTER}))
@@ -199,9 +199,9 @@ test('select with enter', function (t) {
         raf(function () {
           selected = el.querySelectorAll('.selected')
           t.equal(selected.length, 3)
-          t.equal(selected[0].innerText, 'B')
-          t.equal(selected[1].innerText, 'C')
-          t.equal(selected[2].innerText, 'A')
+          t.equal(selected[0].innerHTML, 'B')
+          t.equal(selected[1].innerHTML, 'C')
+          t.equal(selected[2].innerHTML, 'A')
           t.end()
         })
       })
