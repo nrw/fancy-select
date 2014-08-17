@@ -3,9 +3,9 @@ concurrency: 1
 browsers:
   - name: chrome
     version: latest
-  - name: ie
-    version: latest
   - name: firefox
     version: latest
   - name: iphone
+    version: latest
+  - name: ie
     version: latest
