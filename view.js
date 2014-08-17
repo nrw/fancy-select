@@ -47,6 +47,11 @@ function render (state) {
           mutableFocus()
 
           switch (e.type) {
+            case 'blur':
+              state.events.close(true)
+              // console.log(e.currentTarget)
+              // e.preventDefault()
+              break
             case 'focus':
               state.events.dropdown(true)
               break
@@ -90,7 +95,12 @@ function render (state) {
 
         return h('div.option', {
           className: [styles.option.className, focusClass].join(' '),
-          'ev-click': mercury.event(state.events.select, opt)
+          'ev-click': function (e) {
+            state.events.select(opt)
+            // console.log(e.currentTarget.parentNode)
+            e.currentTarget.parentNode.parentNode
+              .children[0].children[1].focus()
+          }
         }, opt.title)
       })
     ]) : null

@@ -15,8 +15,21 @@ function FancySelect (options) {
     select: mercury.input(),
     dropdown: mercury.input(),
     input: mercury.input(),
-    refocus: mercury.input()
+    refocus: mercury.input(),
+    close: mercury.input()
   }
+
+  var willClose
+
+  events.close(function (close) {
+    if (close) {
+      willClose = setTimeout(function () {
+        events.dropdown(false)
+      }, 50)
+    } else if (willClose) {
+      clearTimeout(willClose)
+    }
+  })
 
   events.backspace(function () {
     if (!state.query()) {
@@ -35,6 +48,7 @@ function FancySelect (options) {
     val.push(opt)
     value.set(val)
     query.set('')
+    events.close()
   })
 
   events.dropdown(function (open) {

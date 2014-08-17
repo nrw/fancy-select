@@ -218,3 +218,22 @@ test('clicking input background focuses input', function (t) {
   t.equal(document.activeElement, el.querySelector('input'))
   t.end()
 })
+
+test('dropdown hides on blur', function (t) {
+  comp.state.value.set([])
+  input = el.querySelector('input')
+
+  input.dispatchEvent(event('focus', {bubbles: true}))
+
+  raf(function () {
+    t.ok(el.querySelector('.dropdown'))
+
+    document.body.dispatchEvent(event('focus', {bubbles: true}))
+    input.dispatchEvent(event('blur', {bubbles: true}))
+
+    setTimeout(function () {
+      t.notOk(el.querySelector('.dropdown'))
+      t.end()
+    }, 100)
+  })
+})
