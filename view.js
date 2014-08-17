@@ -13,10 +13,12 @@ module.exports = render
 
 function render (state) {
   return h('div.fancy-select', {
-
   }, [
     h('div.input-area', {
-      className: styles.background.className
+      className: styles.background.className,
+      'ev-click': function (e) {
+        e.currentTarget.children[1].focus()
+      }
     }, [
       h('div.all-selected', {
         className: styles.allSelected.className

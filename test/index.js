@@ -208,3 +208,13 @@ test('select with enter', function (t) {
     })
   })
 })
+
+test('clicking input background focuses input', function (t) {
+  document.body.dispatchEvent(event('focus', {bubbles: true}))
+
+  var bg = el.querySelector('.input-area')
+  bg.dispatchEvent(event('click', {bubbles: true}))
+
+  t.equal(document.activeElement, el.querySelector('input'))
+  t.end()
+})
