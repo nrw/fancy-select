@@ -25,7 +25,7 @@ function FancySelect (options) {
     if (close) {
       willClose = setTimeout(function () {
         events.dropdown(false)
-      }, 150)
+      }, 110)
     } else {
       clearTimeout(willClose)
       events.dropdown(true)
