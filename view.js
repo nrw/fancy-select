@@ -48,8 +48,7 @@ function render (state) {
 
           switch (e.type) {
             case 'blur':
-              var relatedTarget = e.relatedTarget, element = state.element;
-              console.log('related', relatedTarget ? relatedTarget.tagName : '')
+              var relatedTarget = e.relatedTarget
 
               // TODO: this will likely stop working until
               // https://github.com/Raynos/dom-delegator/pull/4 is fixed
@@ -70,22 +69,23 @@ function render (state) {
                   state.events.backspace()
                   break
                 case ENTER:
-                  state.events.select(state.available[state.focused])
+                  console.log('REASDFJASDF', state.events.readIndex(state.available, state.focused))
+                  state.events.select(
+                    state.events.readIndex(state.available, state.focused))
                   e.preventDefault()
                   break
                 case DOWN:
-                  state.events.refocus({
-                    change: 1,
-                    current: state.focused,
-                    available: state.available
+                  // console.log('DOWN', state)
+                  state.events.focusNext({
+                    available: state.available,
+                    focused: state.focused
                   })
                   e.preventDefault()
                   break
                 case UP:
-                  state.events.refocus({
-                    change: -1,
-                    current: state.focused,
-                    available: state.available
+                  state.events.focusPrev({
+                    available: state.available,
+                    focused: state.focused
                   })
                   e.preventDefault()
                   break
@@ -97,22 +97,34 @@ function render (state) {
     ]),
     state.isOpen ? h('div.dropdown', {
     }, [
-      state.available.map(function (opt, index) {
-        var focusClass = index === state.focused ?
-          styles.focused.className + ' focused' : ''
-
-        return h('div.option', {
-          className: [styles.option.className, focusClass].join(' '),
-          tabIndex: 1000,
-          'ev-click': function (e) {
-            state.events.select(opt)
-            e.currentTarget.parentNode.parentNode
-              .children[0].children[1].focus()
-          }
-        }, opt.title)
-      })
+      renderGroup(state, state.available)
     ]) : null
   ])
+}
+
+function renderGroup (state, data) {
+  return data.map(function (opt, index) {
+    if (opt.options) {
+      return h('div.group', [
+        h('div.groupname', opt.title),
+        h('div.groupoptions', renderGroup(state, opt.options))
+      ])
+    } else {
+      // console.log('obj', state.focusedId)
+      var focusClass = opt.id && opt.id === state.focusedId ?
+        styles.focused.className + ' focused' : ''
+
+      return h('div.option', {
+        className: [styles.option.className, focusClass].join(' '),
+        tabIndex: 1000,
+        'ev-click': function (e) {
+          state.events.select(opt)
+          e.currentTarget.parentNode.parentNode
+            .children[0].children[1].focus()
+        }
+      }, opt.title)
+    }
+  })
 }
 
 function measureString (str, current) {
