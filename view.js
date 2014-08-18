@@ -48,9 +48,17 @@ function render (state) {
 
           switch (e.type) {
             case 'blur':
-              state.events.close(true)
-              // console.log(e.currentTarget)
-              // e.preventDefault()
+              var relatedTarget = e.relatedTarget, element = state.element;
+              console.log('related', relatedTarget ? relatedTarget.tagName : '')
+
+              // TODO: this will likely stop working until
+              // https://github.com/Raynos/dom-delegator/pull/4 is fixed
+              if (
+                !relatedTarget ||
+                !e.currentTarget.parentNode.parentNode.contains(relatedTarget)
+              ) {
+                state.events.dropdown(false)
+              }
               break
             case 'focus':
               state.events.dropdown(true)
@@ -95,9 +103,9 @@ function render (state) {
 
         return h('div.option', {
           className: [styles.option.className, focusClass].join(' '),
+          tabIndex: 1000,
           'ev-click': function (e) {
             state.events.select(opt)
-            // console.log(e.currentTarget.parentNode)
             e.currentTarget.parentNode.parentNode
               .children[0].children[1].focus()
           }

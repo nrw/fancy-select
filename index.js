@@ -21,18 +21,6 @@ function FancySelect (options) {
 
   var willClose
 
-  events.close(function (close) {
-    if (close) {
-      willClose = setTimeout(function () {
-        events.dropdown(false)
-      }, 110)
-    } else {
-      clearTimeout(willClose)
-      events.dropdown(true)
-      willClose = null
-    }
-  })
-
   events.backspace(function () {
     if (!state.query()) {
       var val = value()
@@ -46,7 +34,6 @@ function FancySelect (options) {
   })
 
   events.select(function (opt) {
-    events.close(false)
     var val = value()
     val.push(opt)
     value.set(val)

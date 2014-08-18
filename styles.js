@@ -25,6 +25,7 @@ module.exports = {
     display: 'inline-block'
   }),
   option: RCSS.registerClass({
+    outline: 0,
     borderBottom: '1px solid #eee',
     padding: '0.4em 0.8em',
     display: 'block',
