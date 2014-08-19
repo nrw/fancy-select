@@ -4,7 +4,6 @@ var raf = require('raf')
 var test = require('tape')
 var document = require('global/document')
 var event = require('synthetic-dom-events')
-window.e = event
 
 var ENTER = 13
 var BACKSPACE = 8
