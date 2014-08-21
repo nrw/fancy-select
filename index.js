@@ -104,21 +104,9 @@ function FancySelect (options) {
     available: available
   })
 
-  var c
-  window.next = function () {
-    nextOption(opts())
-    nextOption(opts(), [0, 0])
-    nextOption(opts(), [0, 1])
-    nextOption(opts(), [0, 2])
-  }
   return {
     state: state,
-    events: {
-      onChange: onChange
-    }
-  }
-
-  function onChange (argument) {
+    events: {}
   }
 }
 
