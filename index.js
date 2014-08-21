@@ -38,11 +38,12 @@ function FancySelect (options) {
   })
 
   events.select(function (opt) {
+    if (!opt) return
+
     var val = value()
     val.push(opt)
     value.set(val)
     query.set('')
-    focused.set(nav.nearestOption(available(), focused()))
   })
 
   events.dropdown(function (open) {
@@ -69,10 +70,7 @@ function FancySelect (options) {
   var focused = mercury.value(nav.nextOption(available()))
   // refocus when available changes
   available(function (val) {
-    // events.selectNext({
-    //   focused: state.focused(),
-    //   available: val
-    // })
+    focused.set(nav.nearestOption(val, focused()))
   })
 
   events.focusNext(function (data) {
