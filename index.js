@@ -94,17 +94,16 @@ function FancySelect (options) {
     options: opts,
     value: value,
     focused: focused,
-    focusedId: mercury.computed([available, focused], function (available, focused) {
-      // console.log('id', available, focused, readIndex(available, focused))
+    focusedId: mercury.computed([
+      available, focused
+    ], function (available, focused) {
       var node = nav.readPath(available, focused)
-      // console.log(node, focused)
       return node ? node.id : null
     }),
     selectedIds: selectedIds,
     isOpen: mercury.value(false),
     query: query,
     available: available
-    // focused: mercury.value(0)
   })
 
   var c

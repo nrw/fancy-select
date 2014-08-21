@@ -69,13 +69,11 @@ function render (state) {
                   state.events.backspace()
                   break
                 case ENTER:
-                  // console.log('REASDFJASDF', state.events.readIndex(state.available, state.focused))
                   state.events.select(
                     state.events.readPath(state.available, state.focused))
                   e.preventDefault()
                   break
                 case DOWN:
-                  // console.log('DOWN', state)
                   state.events.focusNext({
                     available: state.available,
                     focused: state.focused
