@@ -127,9 +127,14 @@ function nextOption (obj, path) {
 function nearestOption (obj, orig) {
   var path
 
+  if (!obj || !obj.length) {
+    return null
+  }
+
   if (!orig) {
     orig = nextNode(obj, orig)
   }
+
   path = orig.slice(0)
 
   while (path && !hasId(obj, path)) {
