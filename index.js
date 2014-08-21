@@ -1,7 +1,10 @@
 var mercury = require('mercury')
 var document = require('global/document')
+var cloneDeep = require('lodash.clonedeep')
 
 FancySelect.render = require('./view')
+var nav = require('./navigate')
+var Filter = require('./nested-filter')
 
 module.exports = FancySelect
 
@@ -19,7 +22,7 @@ function FancySelect (options) {
     close: mercury.input(),
     focusNext: mercury.input(),
     focusPrev: mercury.input(),
-    readIndex: readIndex
+    readPath: nav.readPath
   }
 
   events.backspace(function () {
@@ -39,6 +42,7 @@ function FancySelect (options) {
     val.push(opt)
     value.set(val)
     query.set('')
+    focused.set(nav.nearestOption(available(), focused()))
   })
 
   events.dropdown(function (open) {
@@ -54,25 +58,15 @@ function FancySelect (options) {
 
   // options - selected - not matching query
   var available = mercury.computed([
-    opts, value, query
-  ], function (opts, value, query) {
-    var ids = selectedIds()
-
-    var unused = opts.filter(function (opt) {
-      return !~ids.indexOf(opt.id)
-    })
-
-    if (query) {
-      var regex = filterRegex(query)
-      return unused.filter(function (opt) {
-        return regex.test(opt.title)
-      })
-    } else {
-      return unused
-    }
+    opts, value, query, selectedIds
+  ], function (opts, value, query, ids) {
+    opts = cloneDeep(opts)
+    Filter.runFilter(unselectedFilter(ids), opts, '')
+    Filter.runFilter(queryFilter, opts, query, {keepMatchChildren: true})
+    return opts
   })
 
-  var focused = mercury.value(nextOption(available()))
+  var focused = mercury.value(nav.nextOption(available()))
   // refocus when available changes
   available(function (val) {
     // events.selectNext({
@@ -82,13 +76,17 @@ function FancySelect (options) {
   })
 
   events.focusNext(function (data) {
-    // console.log('next', data.available, data.focused, nextOption(data.available, data.focused))
-    focused.set(nextOption(data.available, data.focused))
+    var node = nav.nextOption(data.available, data.focused)
+    if (node) {
+      focused.set(node)
+    }
   })
 
   events.focusPrev(function (data) {
-    // console.log('prev', data.available, data.focused, nextOption(data.available, data.focused))
-    focused.set(prevOption(data.available, data.focused))
+    var node = nav.prevOption(data.available, data.focused)
+    if (node) {
+      focused.set(node)
+    }
   })
 
   var state = mercury.struct({
@@ -98,7 +96,8 @@ function FancySelect (options) {
     focused: focused,
     focusedId: mercury.computed([available, focused], function (available, focused) {
       // console.log('id', available, focused, readIndex(available, focused))
-      var node = readIndex(available, focused)
+      var node = nav.readPath(available, focused)
+      // console.log(node, focused)
       return node ? node.id : null
     }),
     selectedIds: selectedIds,
@@ -126,100 +125,17 @@ function FancySelect (options) {
   }
 }
 
-function prevOption (tree, current) {
-  var node, size
-  // console.log('NEXT OPT', tree, current)
-  if (!current) {
-    var base = tree
-    current = [0]
-    while (base.options) {
-      base = tree[0]
-      current.push(0)
-    }
-    return current
+function queryFilter (opt, query) {
+  try {
+    var regex = new RegExp(query, 'i')
+    return opt.title && regex.test(opt.title)
+  } catch (e) {
+    return false
   }
-
-  var original = current
-  current = current.slice(0)
-
-  var i = current.length - 1
-  // console.log('IIII', i)
-  while (i >= 0) {
-    // console.log('current------1', current)
-    current[i]--
-    node = readIndex(tree, current)
-    // console.log('current------', current, node)
-
-    if (node) {
-      return current
-    } else {
-      // var len = current[i - 1]
-      // if (len >= 0) {
-
-      // }
-      // console.log('INDEX', readIndex(tree, current.slice(0, i - 1)))
-      current[i] = current[i - 1]
-      i--
-    }
-  }
-
-  return original
 }
 
-function nextOption (tree, current) {
-  var node, size
-  // console.log('NEXT OPT', tree, current)
-  if (!current) {
-    var base = tree
-    current = [0]
-    while (base.options) {
-      base = tree[0]
-      current.push(0)
-    }
-    return current
+function unselectedFilter (existing) {
+  return function (opt) {
+    return !opt.id || !~existing.indexOf(opt.id)
   }
-
-  var original = current
-  current = current.slice(0)
-
-  var i = current.length - 1
-  // console.log('IIII', i)
-  while (i >= 0) {
-    // console.log('current------1', current)
-    current[i]++
-    node = readIndex(tree, current)
-    // console.log('current------', current, node)
-
-    if (node) {
-      return current
-    } else {
-      current[i] = 0
-      i--
-    }
-  }
-
-  return original
-  // current[current.length - 1]++
-  // size = current.length
-
-  // for (var i = 0; i < current.length - 1; i++) {
-  //   node = tree[current[i]]
-  // }
-
-  // if (node) {
-  // console.log(node)
-  // console.log(node[size - 1])
-  // }
 }
-
-function readIndex (obj, path) {
-  // console.log('READ', path)
-  var node
-  for (var i = 0; i < path.length; i++) {
-    node = obj[path[i]]
-  }
-  return node
-}
-
-// last ++
-// else  (last - 1)++, last = 0
