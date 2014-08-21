@@ -19,6 +19,7 @@
     "rcss": "^0.1.3"
   },
   "devDependencies": {
+    "function-bind": "^1.0.0",
     "raf": "^2.0.2",
     "synthetic-dom-events": "^0.2.2",
     "tape": "^2.14.0",
