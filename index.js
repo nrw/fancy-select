@@ -3,12 +3,15 @@ var document = require('global/document')
 var cloneDeep = require('lodash.clonedeep')
 
 FancySelect.render = require('./view')
-var nav = require('./navigate')
-var Filter = require('./nested-filter')
+
+var NavTree = require('option-tree-navigate')
+var FilterTree = require('option-tree-filter')
 
 module.exports = FancySelect
 
 function FancySelect (options) {
+  var tree = NavTree(options.options)
+
   var filterRegex = function (query) {
     return new RegExp(query, 'i')
   }
@@ -22,7 +25,9 @@ function FancySelect (options) {
     close: mercury.input(),
     focusNext: mercury.input(),
     focusPrev: mercury.input(),
-    readPath: nav.readPath
+    readPath: function (data, path) {
+      return NavTree(data).readPath(path)
+    }
   }
 
   events.backspace(function () {
@@ -60,28 +65,29 @@ function FancySelect (options) {
   // options - selected - not matching query
   var available = mercury.computed([
     opts, value, query, selectedIds
-  ], function (opts, value, query, ids) {
-    opts = cloneDeep(opts)
-    Filter.runFilter(unselectedFilter(ids), opts, '')
-    Filter.runFilter(queryFilter, opts, query, {keepMatchChildren: true})
-    return opts
+  ], function (data, value, query, ids) {
+    return FilterTree(
+      FilterTree(data, [unselectedFilter(ids)]).query(),
+      [queryFilter],
+      {keepMatchChildren: true}
+    ).query(query)
   })
 
-  var focused = mercury.value(nav.nextOption(available()))
+  var focused = mercury.value(tree.nextWith('id', available()))
   // refocus when available changes
   available(function (val) {
-    focused.set(nav.nearestOption(val, focused()))
+    focused.set(NavTree(val).nearestWith('id', focused()))
   })
 
   events.focusNext(function (data) {
-    var node = nav.nextOption(data.available, data.focused)
+    var node = NavTree(data.available).nextWith('id', data.focused)
     if (node) {
       focused.set(node)
     }
   })
 
   events.focusPrev(function (data) {
-    var node = nav.prevOption(data.available, data.focused)
+    var node = NavTree(data.available).prevWith('id', data.focused)
     if (node) {
       focused.set(node)
     }
@@ -95,7 +101,7 @@ function FancySelect (options) {
     focusedId: mercury.computed([
       available, focused
     ], function (available, focused) {
-      var node = nav.readPath(available, focused)
+      var node = NavTree(available).readPath(focused)
       return node ? node.id : null
     }),
     selectedIds: selectedIds,
@@ -120,7 +126,8 @@ function queryFilter (opt, query) {
 }
 
 function unselectedFilter (existing) {
+  // console.log('existing', existing)
   return function (opt) {
-    return !opt.id || !~existing.indexOf(opt.id)
+    return !opt.id || existing.indexOf(opt.id) === -1
   }
 }

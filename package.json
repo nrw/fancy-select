@@ -12,10 +12,12 @@
     "test-local": "run-browser test/index.js"
   },
   "dependencies": {
-    "mercury": "^6.0.1",
-    "next-tick": "^0.2.2",
     "global": "^4.2.1",
     "lodash.clonedeep": "^2.4.1",
+    "mercury": "^6.0.1",
+    "next-tick": "^0.2.2",
+    "option-tree-filter": "^0.1.0",
+    "option-tree-navigate": "^0.3.0",
     "rcss": "^0.1.3"
   },
   "devDependencies": {

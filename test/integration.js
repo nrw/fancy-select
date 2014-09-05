@@ -1,9 +1,9 @@
-var RCSS = require('rcss')
-var mercury = require('mercury')
-var raf = require('raf')
-var test = require('tape')
 var document = require('global/document')
 var event = require('synthetic-dom-events')
+var mercury = require('mercury')
+var RCSS = require('rcss')
+var raf = require('raf')
+var test = require('tape')
 
 var ENTER = 13
 var BACKSPACE = 8
@@ -319,6 +319,56 @@ test('allows groups', function (t) {
       var groups = el.querySelectorAll('.groupname')
       t.equal(groups.length, 1)
       t.equal(groups[0].innerHTML, 'second')
+      t.end()
+    })
+  })
+})
+
+// TODO: implement select-action
+test('creates unknown options', function (t) {
+  destroy()
+
+  comp = FancySelect({
+    options: [{
+      id: '__create__',
+      title: 'create a new item'
+    }, {
+      id: 'a',
+      title: 'A'
+    }, {
+      id: 'b',
+      title: 'B'
+    }, {
+      id: 'c',
+      title: 'C'
+    }],
+    value: [{
+      id: 'a',
+      title: 'A'
+    }],
+    hooks: {
+      __create__: function (str) {
+        return {id: str, title: str.toUpperCase()}
+      }
+    }
+  })
+
+  RCSS.injectAll()
+
+  embed(comp.state, FancySelect.render)
+
+  input = el.querySelector('input')
+
+  input.dispatchEvent(event('focus', {bubbles: true}))
+
+  raf(function () {
+    t.ok(el.querySelector('.dropdown'))
+
+    document.body.dispatchEvent(event('focus', {bubbles: true}))
+    input.dispatchEvent(event('blur', {bubbles: true}))
+
+    raf(function () {
+      t.notOk(el.querySelector('.dropdown'))
       t.end()
     })
   })

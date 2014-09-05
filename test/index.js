@@ -12,6 +12,4 @@ test('mercury is a object', function (t) {
   t.end()
 })
 
-require('./navigate.js')
-require('./nested-filter.js')
 require('./integration.js')
