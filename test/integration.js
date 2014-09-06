@@ -325,7 +325,6 @@ test('allows groups', function (t) {
   })
 })
 
-// TODO: implement select-action
 test('creates unknown options', function (t) {
   destroy()
 
@@ -387,4 +386,20 @@ test('creates unknown options', function (t) {
       t.end()
     })
   })
+})
+
+test('dynamic placeholder text', function (t) {
+  t.end()
+})
+
+test('treat separator key as create', function (t) {
+  t.end()
+})
+
+test('custom filter functions', function (t) {
+  t.end()
+})
+
+test('querying text', function (t) {
+  t.end()
 })
