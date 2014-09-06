@@ -100,16 +100,21 @@ function render (state) {
   ])
 }
 
-function renderGroup (state, data) {
+function renderGroup (state, data, path) {
+  path = path || []
+
   return data.map(function (opt, index) {
     if (opt.options) {
       return h('div.group', [
         h('div.groupname', opt.title),
-        h('div.groupoptions', renderGroup(state, opt.options))
+        h('div.groupoptions', renderGroup(state, opt.options, path.concat([
+          index
+        ]).slice(0)))
       ])
     } else {
-      // console.log('obj', state.focusedId)
-      var focusClass = opt.id && opt.id === state.focusedId ?
+      // console.log('obj', state.focused, path)
+      var focusClass = opt.id &&
+        arrayEqual(path.concat([index]), state.focused) ?
         styles.focused.className + ' focused' : ''
 
       return h('div.option', {
@@ -146,4 +151,14 @@ function measureString (str, current) {
   var width = span.offsetWidth
   span.remove()
   return width
+}
+
+function arrayEqual (a, b) {
+  if (a.length !== b.length) return false
+  for (var i = a.length - 1; i >= 0; i--) {
+    if (a[i] !== b[i]) {
+      return false
+    }
+  }
+  return true
 }

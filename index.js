@@ -6,11 +6,14 @@ FancySelect.render = require('./view')
 
 var NavTree = require('option-tree-navigate')
 var FilterTree = require('option-tree-filter')
+var SelectAction = require('option-select-action')
 
 module.exports = FancySelect
 
-function FancySelect (options) {
+function FancySelect (options, valueStore) {
   var tree = NavTree(options.options)
+  options.actions = options.actions || {}
+  valueStore = valueStore || SelectAction(options.actions, options.value)
 
   var filterRegex = function (query) {
     return new RegExp(query, 'i')
@@ -44,9 +47,10 @@ function FancySelect (options) {
 
   events.select(function (opt) {
     if (!opt) return
+    console.log('opt__', opt, valueStore.value())
+    valueStore.select(opt, query())
 
-    var val = value()
-    val.push(opt)
+    var val = valueStore.value()
     value.set(val)
     query.set('')
   })
@@ -119,7 +123,7 @@ function FancySelect (options) {
 function queryFilter (opt, query) {
   try {
     var regex = new RegExp(query, 'i')
-    return opt.title && regex.test(opt.title)
+    return (opt.title && regex.test(opt.title)) || (opt && opt.alwaysShow)
   } catch (e) {
     return false
   }

@@ -4,6 +4,7 @@ var mercury = require('mercury')
 var RCSS = require('rcss')
 var raf = require('raf')
 var test = require('tape')
+var SelectAction = require('option-select-action')
 
 var ENTER = 13
 var BACKSPACE = 8
@@ -328,27 +329,31 @@ test('allows groups', function (t) {
 test('creates unknown options', function (t) {
   destroy()
 
+  var options = [{
+    id: '__create__',
+    title: 'create a new item',
+    alwaysShow: true
+  }, {
+    id: 'a',
+    title: 'A'
+  }, {
+    id: 'b',
+    title: 'B'
+  }, {
+    id: 'c',
+    title: 'C'
+  }]
   comp = FancySelect({
-    options: [{
-      id: '__create__',
-      title: 'create a new item'
-    }, {
-      id: 'a',
-      title: 'A'
-    }, {
-      id: 'b',
-      title: 'B'
-    }, {
-      id: 'c',
-      title: 'C'
-    }],
+    options: options,
     value: [{
       id: 'a',
       title: 'A'
     }],
-    hooks: {
-      __create__: function (str) {
-        return {id: str, title: str.toUpperCase()}
+    actions: {
+      __create__: function (obj, query) {
+        var opts = comp.state.options()
+        opts.push({id: query, title: query.toUpperCase()})
+        comp.state.options.set(opts)
       }
     }
   })
@@ -365,10 +370,20 @@ test('creates unknown options', function (t) {
     t.ok(el.querySelector('.dropdown'))
 
     document.body.dispatchEvent(event('focus', {bubbles: true}))
-    input.dispatchEvent(event('blur', {bubbles: true}))
+    input.value = 'e'
+    input.dispatchEvent(event('input', {bubbles: true}))
+    input.dispatchEvent(event('keydown', {keyCode: ENTER}))
 
     raf(function () {
-      t.notOk(el.querySelector('.dropdown'))
+      t.ok(el.querySelector('.dropdown'))
+
+      options = el.querySelectorAll('.option')
+      t.equal(options.length, 4)
+      t.equal(options[0].innerHTML, 'create a new item')
+      t.equal(options[1].innerHTML, 'B')
+      t.equal(options[2].innerHTML, 'C')
+      t.equal(options[3].innerHTML, 'E')
+
       t.end()
     })
   })
