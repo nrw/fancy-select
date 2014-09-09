@@ -69,22 +69,15 @@ function render (state) {
                   state.events.backspace()
                   break
                 case ENTER:
-                  state.events.select(
-                    state.events.readPath(state.available, state.focused))
+                  state.events.select(state.active)
                   e.preventDefault()
                   break
                 case DOWN:
-                  state.events.focusNext({
-                    available: state.available,
-                    focused: state.focused
-                  })
+                  state.events.next()
                   e.preventDefault()
                   break
                 case UP:
-                  state.events.focusPrev({
-                    available: state.available,
-                    focused: state.focused
-                  })
+                  state.events.prev()
                   e.preventDefault()
                   break
               }
@@ -95,13 +88,14 @@ function render (state) {
     ]),
     state.isOpen ? h('div.dropdown', {
     }, [
-      renderGroup(state, state.available)
+      renderGroup(state, state.filtered)
     ]) : null
   ])
 }
 
 function renderGroup (state, data, path) {
   path = path || []
+  // console.log('obj', data, path)
 
   return data.map(function (opt, index) {
     if (opt.options) {
@@ -112,16 +106,16 @@ function renderGroup (state, data, path) {
         ]).slice(0)))
       ])
     } else {
-      // console.log('obj', state.focused, path)
+      var currentPath = path.concat([index])
       var focusClass = opt.id &&
-        arrayEqual(path.concat([index]), state.focused) ?
+        arrayEqual(currentPath, state.active) ?
         styles.focused.className + ' focused' : ''
 
       return h('div.option', {
         className: [styles.option.className, focusClass].join(' '),
         tabIndex: 1000,
         'ev-click': function (e) {
-          state.events.select(opt)
+          state.events.select(currentPath)
           e.currentTarget.parentNode.parentNode
             .children[0].children[1].focus()
         }
@@ -154,11 +148,11 @@ function measureString (str, current) {
 }
 
 function arrayEqual (a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b)) return false
   if (a.length !== b.length) return false
+
   for (var i = a.length - 1; i >= 0; i--) {
-    if (a[i] !== b[i]) {
-      return false
-    }
+    if (a[i] !== b[i]) return false
   }
   return true
 }

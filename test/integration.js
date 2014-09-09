@@ -4,7 +4,6 @@ var mercury = require('mercury')
 var RCSS = require('rcss')
 var raf = require('raf')
 var test = require('tape')
-var SelectAction = require('option-select-action')
 
 var ENTER = 13
 var BACKSPACE = 8
@@ -342,6 +341,7 @@ test('creates unknown options', function (t) {
     id: 'c',
     title: 'C'
   }]
+
   comp = FancySelect({
     options: options,
     value: [{
@@ -352,7 +352,8 @@ test('creates unknown options', function (t) {
       __create__: function (obj, query) {
         var opts = comp.state.options()
         opts.push({id: query, title: query.toUpperCase()})
-        comp.state.options.set(opts)
+        comp.setOptions(opts)
+        comp.setQuery('')
       }
     }
   })
@@ -364,7 +365,6 @@ test('creates unknown options', function (t) {
   input = el.querySelector('input')
 
   input.dispatchEvent(event('focus', {bubbles: true}))
-
   raf(function () {
     t.ok(el.querySelector('.dropdown'))
 
