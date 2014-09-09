@@ -34,8 +34,9 @@ function render (state) {
         name: 'query',
         value: state.query,
         autocomplete: 'off',
+        placeholder: state.placeholder,
         style: {
-          width: measureString(state.query) + 'px'
+          width: maxWidth([state.query, state.placeholder]) + 'px'
         },
         className: styles.input.className,
 
@@ -122,6 +123,17 @@ function renderGroup (state, data, path) {
       }, opt.title)
     }
   })
+}
+
+function maxWidth (strs) {
+  var one, max = 0
+  strs.forEach(function (str) {
+    one = measureString(str)
+    if (one > max) {
+      max = one
+    }
+  })
+  return max
 }
 
 function measureString (str, current) {

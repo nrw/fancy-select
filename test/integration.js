@@ -389,17 +389,74 @@ test('creates unknown options', function (t) {
 })
 
 test('dynamic placeholder text', function (t) {
-  t.end()
+  destroy()
+
+  var options = [{
+    id: 'a',
+    title: 'A'
+  }, {
+    id: 'b',
+    title: 'B'
+  }, {
+    id: 'c',
+    title: 'C'
+  }]
+
+  comp = FancySelect({
+    options: options,
+    placeholder: 'select first',
+    value: [{
+      id: 'a',
+      title: 'A'
+    }]
+  })
+
+  mercury.watch(comp.state.value, function (val) {
+    if (val.length === 0) {
+      comp.state.placeholder.set('select first')
+    } else if (val.length === 1) {
+      comp.state.placeholder.set('select second')
+    } else {
+      comp.state.placeholder.set('select another')
+    }
+  })
+
+  RCSS.injectAll()
+
+  embed(comp.state, FancySelect.render)
+
+  input = el.querySelector('input')
+
+  input.dispatchEvent(event('focus', {bubbles: true}))
+  raf(function () {
+    t.ok(el.querySelector('.dropdown'))
+    t.equal(input.placeholder, 'select second')
+
+    document.body.dispatchEvent(event('focus', {bubbles: true}))
+
+    input.dispatchEvent(event('keydown', {keyCode: ENTER}))
+
+    raf(function () {
+      t.equal(input.placeholder, 'select another')
+      input.dispatchEvent(event('keydown', {keyCode: BACKSPACE}))
+      input.dispatchEvent(event('keydown', {keyCode: BACKSPACE}))
+
+      raf(function () {
+        t.equal(input.placeholder, 'select first')
+        t.end()
+      })
+    })
+  })
 })
 
-test('treat separator key as create', function (t) {
-  t.end()
-})
+// test('treat separator key as create', function (t) {
+//   t.end()
+// })
 
-test('custom filter functions', function (t) {
-  t.end()
-})
+// test('custom filter functions', function (t) {
+//   t.end()
+// })
 
-test('querying text', function (t) {
-  t.end()
-})
+// test('querying text', function (t) {
+//   t.end()
+// })

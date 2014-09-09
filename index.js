@@ -12,7 +12,9 @@ function FancySelect (data) {
   data = data || {}
 
   data.filter = data.filter || function (opt, query, value) {
-    if (opt.id === '__create__') return {keep: true}
+    // keep any that start with __
+    if (opt.id && opt.id.indexOf('__') === 0) return {keep: true}
+
     // omit value
     for (var i = value.length - 1; i >= 0; i--) {
       if (opt.id === value[i].id) {
@@ -20,6 +22,7 @@ function FancySelect (data) {
       }
     }
 
+    // match query
     try {
       var regex = new RegExp(query || '', 'i')
       return {
@@ -71,12 +74,13 @@ function FancySelect (data) {
     query: tree.state.query,
     active: tree.state.active,
     options: tree.state.options,
-    isOpen: mercury.value(true)
+    isOpen: mercury.value(true),
+
+    placeholder: mercury.value(data.placeholder || '')
   })
 
   return {
     state: state,
-    events: {},
     setOptions: tree.setOptions,
     setQuery: tree.setQuery
   }
