@@ -1,6 +1,7 @@
 var mercury = require('mercury')
 var document = require('global/document')
 var cloneDeep = require('lodash.clonedeep')
+var slice = Array.prototype.slice
 
 FancySelect.render = require('./view')
 
@@ -41,7 +42,7 @@ function FancySelect (data) {
 
   var events = {
     backspace: mercury.input(),
-    select: tree.select,
+    select: mercury.input(),
     dropdown: mercury.input(),
     input: mercury.input(),
     refocus: mercury.input(),
@@ -53,10 +54,12 @@ function FancySelect (data) {
     }
   }
 
+  events.select(function () {
+    tree.select.apply(null, slice.call(arguments))
+    tree.setQuery('')
+  })
   events.backspace(function () {
-    if (!state.query()) {
-      tree.pop()
-    }
+    if (!state.query()) tree.pop()
   })
 
   events.input(function (val) {
@@ -76,7 +79,8 @@ function FancySelect (data) {
     options: tree.state.options,
     isOpen: mercury.value(true),
 
-    placeholder: mercury.value(data.placeholder || '')
+    placeholder: mercury.value(data.placeholder || ''),
+    separator: mercury.value(data.separator || ',')
   })
 
   return {

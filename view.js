@@ -8,6 +8,7 @@ var ENTER = 13
 var BACKSPACE = 8
 var UP = 38
 var DOWN = 40
+var COMMA = 188
 
 module.exports = render
 
@@ -39,52 +40,11 @@ function render (state) {
           width: maxWidth([state.query, state.placeholder]) + 'px'
         },
         className: styles.input.className,
-
+        'ev-event': inputEvent.bind(null, state),
         'ev-input': mercury.valueEvent(state.events.input, {
           preventDefault: false
-        }),
+        })
 
-        'ev-event': function (e) {
-          mutableFocus()
-
-          switch (e.type) {
-            case 'blur':
-              var relatedTarget = e.relatedTarget
-
-              // TODO: this will likely stop working until
-              // https://github.com/Raynos/dom-delegator/pull/4 is fixed
-              if (
-                !relatedTarget ||
-                !e.currentTarget.parentNode.parentNode.contains(relatedTarget)
-              ) {
-                state.events.dropdown(false)
-              }
-              break
-            case 'focus':
-              state.events.dropdown(true)
-              break
-
-            case 'keydown':
-              switch (e.keyCode) {
-                case BACKSPACE:
-                  state.events.backspace()
-                  break
-                case ENTER:
-                  state.events.select(state.active)
-                  e.preventDefault()
-                  break
-                case DOWN:
-                  state.events.next()
-                  e.preventDefault()
-                  break
-                case UP:
-                  state.events.prev()
-                  e.preventDefault()
-                  break
-              }
-              break
-          }
-        }
       })
     ]),
     state.isOpen ? h('div.dropdown', {
@@ -94,9 +54,46 @@ function render (state) {
   ])
 }
 
+function inputEvent (state, e) {
+  mutableFocus()
+
+  if (e.type === 'blur') {
+    var relatedTarget = e.relatedTarget
+
+    // TODO: this will likely stop working until
+    // https://github.com/Raynos/dom-delegator/pull/4 is fixed
+    if (
+      !relatedTarget ||
+      !e.currentTarget.parentNode.parentNode.contains(relatedTarget)
+    ) {
+      state.events.dropdown(false)
+    }
+  } else if (e.type === 'focus') {
+    state.events.dropdown(true)
+  } else if (e.type === 'keydown') {
+    switch (e.keyCode) {
+      case BACKSPACE:
+        state.events.backspace()
+        break
+      case COMMA:
+      case ENTER:
+        state.events.select(state.active)
+        e.preventDefault()
+        break
+      case DOWN:
+        state.events.next()
+        e.preventDefault()
+        break
+      case UP:
+        state.events.prev()
+        e.preventDefault()
+        break
+    }
+  }
+}
+
 function renderGroup (state, data, path) {
   path = path || []
-  // console.log('obj', data, path)
 
   return data.map(function (opt, index) {
     if (opt.options) {
