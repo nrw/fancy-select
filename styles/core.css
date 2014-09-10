@@ -1,13 +1,10 @@
-.fancy-select {
-  font-size: 2em;
-}
 .fancy-select .background {
   border: 0px solid #000;
   background: #fee;
   width: 100%;
 }
 .fancy-select input[type=text] {
-  font-size: inherit;
+  font: inherit;
   border-width: 0;
   background: transparent;
   outline: 0;
