@@ -56,28 +56,37 @@ function renderListbox (state) {
     h('div.listbox', renderGroup(state, state.filtered))
 }
 
+function renderOption (state, option, path) {
+  return h('div.option', {
+    className: option.id && arrayEqual(path, state.active) ? 'focused' : '',
+    tabIndex: 1000,
+    'ev-click': clickOption.bind(null, state, path)
+  }, option.title)
+}
+
+function clickOption (state, path, e) {
+  state.events.select(path)
+  var parent = e.currentTarget
+  while (parent.className !== 'fancy-select') {
+    parent = parent.parentNode
+  }
+  parent.children[0].children[1].focus()
+}
+
 function renderGroup (state, items, base) {
   base = base || []
 
-  return items.map(function (opt, index) {
+  return items.map(function (option, index) {
     var path = base.slice(0)
     path.push(index)
 
-    if (opt.options) {
+    if (option.options) {
       return h('div', [
-        h('label.group-label', opt.title),
-        h('div.group', renderGroup(state, opt.options, path))
+        h('label.group-label', option.title),
+        h('div.group', renderGroup(state, option.options, path))
       ])
     } else {
-      return h('div.option', {
-        className: opt.id && arrayEqual(path, state.active) ? 'focused' : '',
-        tabIndex: 1000,
-        'ev-click': function (e) {
-          state.events.select(path)
-          e.currentTarget.parentNode.parentNode
-            .children[0].children[1].focus()
-        }
-      }, opt.title)
+      return renderOption(state, option, path)
     }
   })
 }
@@ -129,4 +138,3 @@ function inputEvent (state, e) {
     inputEvents[e.type](state, e)
   }
 }
-
