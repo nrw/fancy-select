@@ -12,12 +12,14 @@
     "test-local": "run-browser test/index.js"
   },
   "dependencies": {
+    "array-equal": "^1.0.0",
     "global": "^4.2.1",
     "insert-css": "^0.2.0",
     "lodash.clonedeep": "^2.4.1",
     "mercury": "^6.0.1",
     "next-tick": "^0.2.2",
-    "option-tree": "^0.2.0"
+    "option-tree": "^0.2.0",
+    "styled-string-width": "^0.1.0"
   },
   "devDependencies": {
     "brfs": "^1.2.0",
