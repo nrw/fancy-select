@@ -1,6 +1,7 @@
 var mercury = require('mercury')
 var document = require('global/document')
 var cloneDeep = require('lodash.clonedeep')
+var stringWidth = require('styled-string-width')
 var slice = Array.prototype.slice
 
 FancySelect.render = require('./view')
@@ -70,6 +71,8 @@ function FancySelect (data) {
     state.isOpen.set(open)
   })
 
+  var placeholder = mercury.value(data.placeholder || '')
+
   var state = mercury.struct({
     events: events,
     value: tree.state.value,
@@ -79,8 +82,18 @@ function FancySelect (data) {
     options: tree.state.options,
     isOpen: mercury.value(true),
 
-    placeholder: mercury.value(data.placeholder || ''),
-    separator: mercury.value(data.separator || ',')
+    placeholder: placeholder,
+    separator: mercury.value(data.separator || ','),
+    inputWidth: mercury.computed([
+      tree.state.query, placeholder
+    ], function maxWidth () {
+      var one, max = 0, strs = slice.call(arguments)
+      strs.forEach(function (str) {
+        one = stringWidth(str, '.fancy-select input')
+        if (one > max) max = one
+      })
+      return max
+    })
   })
 
   return {

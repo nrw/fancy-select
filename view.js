@@ -6,7 +6,6 @@ var fs = require('fs')
 var insertCss = require('insert-css')
 
 var arrayEqual = require('array-equal')
-var stringWidth = require('styled-string-width')
 
 insertCss(fs.readFileSync(__dirname + '/styles/core.css', 'utf8'))
 
@@ -27,8 +26,6 @@ function render (state) {
 }
 
 function renderTextbox (state) {
-  var inputWidth = maxWidth([state.query, state.placeholder])
-
   return h('div.background', {
     'ev-click': function (e) {
       e.currentTarget.children[1].focus()
@@ -45,7 +42,7 @@ function renderTextbox (state) {
       value: state.query,
       autocomplete: 'off',
       placeholder: state.placeholder,
-      style: {width: inputWidth + 'px'},
+      style: {width: state.inputWidth + 'px'},
       'ev-event': inputEvent.bind(null, state),
       'ev-input': mercury.valueEvent(state.events.input, {
         preventDefault: false
@@ -133,11 +130,3 @@ function inputEvent (state, e) {
   }
 }
 
-function maxWidth (strs) {
-  var one, max = 0
-  strs.forEach(function (str) {
-    one = stringWidth(str, '.fancy-select input')
-    if (one > max) max = one
-  })
-  return max
-}
