@@ -58,10 +58,14 @@ function renderListbox (state) {
 
 function renderOption (state, option, path) {
   return h('div.option', {
-    className: option.id && arrayEqual(path, state.active) ? 'focused' : '',
     tabIndex: 1000,
+    className: option.id && arrayEqual(path, state.active) ? 'focused' : '',
     'ev-click': clickOption.bind(null, state, path)
-  }, option.title)
+  }, renderOptionTitle(option))
+}
+
+function renderOptionTitle (option) {
+  return option.title
 }
 
 function clickOption (state, path, e) {
@@ -77,8 +81,7 @@ function renderGroup (state, items, base) {
   base = base || []
 
   return items.map(function (option, index) {
-    var path = base.slice(0)
-    path.push(index)
+    var path = base.slice(0).concat(index)
 
     if (option.options) {
       return h('div', [
