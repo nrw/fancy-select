@@ -1,7 +1,6 @@
 var document = require('global/document')
 var event = require('synthetic-dom-events')
 var mercury = require('mercury')
-var RCSS = require('rcss')
 var raf = require('raf')
 var test = require('tape')
 
@@ -46,8 +45,6 @@ test('click select', function (t) {
       title: 'A'
     }]
   })
-
-  RCSS.injectAll()
 
   embed(comp.state, FancySelect.render)
 
@@ -292,7 +289,6 @@ test('allows groups', function (t) {
     value: [{id: 'a', title: 'A'}]
   })
 
-  RCSS.injectAll()
   embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
@@ -359,8 +355,6 @@ test('creates unknown options', function (t) {
     }
   })
 
-  RCSS.injectAll()
-
   embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
@@ -422,8 +416,6 @@ test('dynamic placeholder text', function (t) {
     }
   })
 
-  RCSS.injectAll()
-
   embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
@@ -469,8 +461,6 @@ test('treat separator key as create', function (t) {
     placeholder: 'select something',
     value: []
   })
-
-  RCSS.injectAll()
 
   embed(comp.state, FancySelect.render)
 
@@ -523,8 +513,6 @@ test('custom rendering of line items', function (t) {
     placeholder: 'select something',
     value: []
   })
-
-  RCSS.injectAll()
 
   embed(comp.state, FancySelect.render)
 

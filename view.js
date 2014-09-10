@@ -1,8 +1,11 @@
 var mercury = require('mercury')
 var window = require('global/window')
 var h = mercury.h
-var styles = require('./styles')
 var mutableFocus = require('./mutable-focus')
+var fs = require('fs')
+var insertCss = require('insert-css')
+
+insertCss(fs.readFileSync(__dirname + '/styles/core.css', 'utf8'))
 
 var ENTER = 13
 var BACKSPACE = 8
@@ -22,19 +25,14 @@ function render (state) {
 function renderTextbox (state) {
   var inputWidth = maxWidth([state.query, state.placeholder])
 
-  return h('div.input-area', {
-    className: styles.background.className,
+  return h('div.input-area.background', {
     'ev-click': function (e) {
       e.currentTarget.children[1].focus()
     }
   }, [
-    h('div.all-selected', {
-      className: styles.allSelected.className
-    }, [
+    h('div.all-selected', [
       state.value.map(function (v) {
-        return h('span.selected', {
-          className: styles.selected.className
-        }, v.title)
+        return h('span.selected', v.title)
       })
     ]),
     h('input', {
@@ -44,7 +42,6 @@ function renderTextbox (state) {
       autocomplete: 'off',
       placeholder: state.placeholder,
       style: {width: inputWidth + 'px'},
-      className: styles.input.className,
       'ev-event': inputEvent.bind(null, state),
       'ev-input': mercury.valueEvent(state.events.input, {
         preventDefault: false
@@ -71,11 +68,8 @@ function renderGroup (state, items, base) {
         h('div.groupoptions', renderGroup(state, opt.options, path))
       ])
     } else {
-      var focusClass = opt.id && arrayEqual(path, state.active) ?
-        styles.focused.className + ' focused' : ''
-
       return h('div.option', {
-        className: [styles.option.className, focusClass].join(' '),
+        className: opt.id && arrayEqual(path, state.active) ? 'focused' : '',
         tabIndex: 1000,
         'ev-click': function (e) {
           state.events.select(path)
