@@ -48,7 +48,7 @@ test('click select', function (t) {
 
   embed(comp.state, FancySelect.render)
 
-  selected = el.querySelectorAll('.selected')
+  selected = el.querySelectorAll('.listitem')
   t.equal(selected.length, 1)
   t.equal(selected[0].innerHTML, 'A')
 
@@ -71,7 +71,7 @@ test('click select', function (t) {
       t.equal(options.length, 1)
       t.equal(options[0].innerHTML, 'B')
 
-      selected = el.querySelectorAll('.selected')
+      selected = el.querySelectorAll('.listitem')
       t.equal(selected.length, 2)
       t.equal(selected[0].innerHTML, 'A')
       t.equal(selected[1].innerHTML, 'C')
@@ -95,7 +95,7 @@ test('backspace removes', function (t) {
       t.equal(options.length, 2)
       t.equal(options[0].innerHTML, 'B')
       t.equal(options[1].innerHTML, 'C')
-      selected = el.querySelectorAll('.selected')
+      selected = el.querySelectorAll('.listitem')
       t.equal(selected.length, 1)
       t.equal(selected[0].innerHTML, 'A')
       t.end()
@@ -112,7 +112,7 @@ test('typing filters options', function (t) {
     options = document.querySelectorAll('.option')
     t.equal(options.length, 1)
     t.equal(options[0].innerHTML, 'C')
-    selected = el.querySelectorAll('.selected')
+    selected = el.querySelectorAll('.listitem')
     t.equal(selected.length, 1)
     t.equal(selected[0].innerHTML, 'A')
 
@@ -124,7 +124,7 @@ test('typing filters options', function (t) {
         bubbles: true
       }))
 
-      selected = el.querySelectorAll('.selected')
+      selected = el.querySelectorAll('.listitem')
       t.equal(selected.length, 1, 'backspace does not delete when query is set')
       t.equal(selected[0].innerHTML, 'A')
       t.end()
@@ -187,7 +187,7 @@ test('select with enter', function (t) {
     input.dispatchEvent(event('keydown', {keyCode: ENTER}))
 
     raf(function () {
-      selected = el.querySelectorAll('.selected')
+      selected = el.querySelectorAll('.listitem')
       t.equal(selected.length, 1)
       t.equal(selected[0].innerHTML, 'B')
 
@@ -195,7 +195,7 @@ test('select with enter', function (t) {
       input.dispatchEvent(event('keydown', {keyCode: ENTER}))
 
       raf(function () {
-        selected = el.querySelectorAll('.selected')
+        selected = el.querySelectorAll('.listitem')
         t.equal(selected.length, 2)
         t.equal(selected[0].innerHTML, 'B')
         t.equal(selected[1].innerHTML, 'C')
@@ -204,7 +204,7 @@ test('select with enter', function (t) {
         input.dispatchEvent(event('keydown', {keyCode: ENTER}))
 
         raf(function () {
-          selected = el.querySelectorAll('.selected')
+          selected = el.querySelectorAll('.listitem')
           t.equal(selected.length, 3)
           t.equal(selected[0].innerHTML, 'B')
           t.equal(selected[1].innerHTML, 'C')
@@ -219,7 +219,7 @@ test('select with enter', function (t) {
 test('clicking input background focuses input', function (t) {
   document.body.dispatchEvent(event('focus', {bubbles: true}))
 
-  var bg = el.querySelector('.input-area')
+  var bg = el.querySelector('.background')
   bg.dispatchEvent(event('click', {bubbles: true}))
 
   t.equal(document.activeElement, el.querySelector('input'))
@@ -233,13 +233,13 @@ test('dropdown hides on blur', function (t) {
   input.dispatchEvent(event('focus', {bubbles: true}))
 
   raf(function () {
-    t.ok(el.querySelector('.dropdown'))
+    t.ok(el.querySelector('.listbox'))
 
     document.body.dispatchEvent(event('focus', {bubbles: true}))
     input.dispatchEvent(event('blur', {bubbles: true}))
 
     raf(function () {
-      t.notOk(el.querySelector('.dropdown'))
+      t.notOk(el.querySelector('.listbox'))
       t.end()
     })
   })
@@ -252,13 +252,13 @@ test('dropdown hides on blur', function (t) {
   input.dispatchEvent(event('focus', {bubbles: true}))
 
   raf(function () {
-    t.ok(el.querySelector('.dropdown'))
+    t.ok(el.querySelector('.listbox'))
 
     document.body.dispatchEvent(event('focus', {bubbles: true}))
     input.dispatchEvent(event('blur', {bubbles: true}))
 
     raf(function () {
-      t.notOk(el.querySelector('.dropdown'))
+      t.notOk(el.querySelector('.listbox'))
       t.end()
     })
   })
@@ -296,7 +296,7 @@ test('allows groups', function (t) {
   input.dispatchEvent(event('focus', {bubbles: true}))
 
   raf(function () {
-    t.ok(el.querySelector('.dropdown'))
+    t.ok(el.querySelector('.listbox'))
 
     options = el.querySelectorAll('.option')
     t.equal(options.length, 4)
@@ -313,7 +313,7 @@ test('allows groups', function (t) {
       t.equal(options.length, 1)
       t.equal(options[0].innerHTML, 'C')
 
-      var groups = el.querySelectorAll('.groupname')
+      var groups = el.querySelectorAll('.group-label')
       t.equal(groups.length, 1)
       t.equal(groups[0].innerHTML, 'second')
       t.end()
@@ -361,7 +361,7 @@ test('creates unknown options', function (t) {
 
   input.dispatchEvent(event('focus', {bubbles: true}))
   raf(function () {
-    t.ok(el.querySelector('.dropdown'))
+    t.ok(el.querySelector('.listbox'))
 
     document.body.dispatchEvent(event('focus', {bubbles: true}))
     input.value = 'e'
@@ -369,7 +369,7 @@ test('creates unknown options', function (t) {
     input.dispatchEvent(event('keydown', {keyCode: ENTER}))
 
     raf(function () {
-      t.ok(el.querySelector('.dropdown'))
+      t.ok(el.querySelector('.listbox'))
 
       options = el.querySelectorAll('.option')
       t.equal(options.length, 4)
@@ -422,7 +422,7 @@ test('dynamic placeholder text', function (t) {
 
   input.dispatchEvent(event('focus', {bubbles: true}))
   raf(function () {
-    t.ok(el.querySelector('.dropdown'))
+    t.ok(el.querySelector('.listbox'))
     t.equal(input.placeholder, 'select second')
 
     document.body.dispatchEvent(event('focus', {bubbles: true}))
@@ -473,14 +473,14 @@ test('treat separator key as create', function (t) {
   raf(function () {
     t.notOk(input.value, 'clear value')
 
-    selected = el.querySelectorAll('.selected')
+    selected = el.querySelectorAll('.listitem')
     t.equal(selected.length, 1)
     t.equal(selected[0].innerHTML, 'A')
 
     input.dispatchEvent(event('keydown', {keyCode: COMMA}))
 
     raf(function () {
-      selected = el.querySelectorAll('.selected')
+      selected = el.querySelectorAll('.listitem')
       t.equal(selected.length, 2)
       t.equal(selected[0].innerHTML, 'A')
       t.equal(selected[1].innerHTML, 'B')
@@ -524,14 +524,14 @@ test('custom rendering of line items', function (t) {
   raf(function () {
     // t.notOk(input.value, 'clear value')
 
-    // selected = el.querySelectorAll('.selected')
+    // selected = el.querySelectorAll('.listitem')
     // t.equal(selected.length, 1)
     // t.equal(selected[0].innerHTML, 'A')
 
     // input.dispatchEvent(event('keydown', {keyCode: COMMA}))
 
     raf(function () {
-      // selected = el.querySelectorAll('.selected')
+      // selected = el.querySelectorAll('.listitem')
       // t.equal(selected.length, 2)
       // t.equal(selected[0].innerHTML, 'A')
       // t.equal(selected[1].innerHTML, 'B')
@@ -543,3 +543,61 @@ test('custom rendering of line items', function (t) {
 
 // idea: require('fancy-select/default-style')
 // idea: require('fancy-select/another-style')
+
+
+test('allows groups', function (t) {
+  destroy()
+
+  comp = FancySelect({
+    options: [{
+      title: 'first',
+      options: [
+        {id: 'a', title: 'A'},
+        {id: 'b', title: 'B'}
+      ]
+    }, {
+      title: 'second',
+      options: [
+        {id: 'c', title: 'C'}
+      ]
+    }, {
+      title: 'third',
+      options: [
+        {id: 'd', title: 'D'},
+        {id: 'e', title: 'E'}
+      ]
+    }],
+    value: [{id: 'a', title: 'A'}]
+  })
+
+  embed(comp.state, FancySelect.render)
+
+  input = el.querySelector('input')
+
+  input.dispatchEvent(event('focus', {bubbles: true}))
+
+  raf(function () {
+    t.ok(el.querySelector('.listbox'))
+
+    options = el.querySelectorAll('.option')
+    t.equal(options.length, 4)
+    t.equal(options[0].innerHTML, 'B')
+    t.equal(options[1].innerHTML, 'C')
+    t.equal(options[2].innerHTML, 'D')
+    t.equal(options[3].innerHTML, 'E')
+
+    input.value = 'se'
+    input.dispatchEvent(event('input', {bubbles: true}))
+
+    raf(function () {
+      options = el.querySelectorAll('.option')
+      t.equal(options.length, 1)
+      t.equal(options[0].innerHTML, 'C')
+
+      var groups = el.querySelectorAll('.group-label')
+      t.equal(groups.length, 1)
+      t.equal(groups[0].innerHTML, 'second')
+      t.end()
+    })
+  })
+})

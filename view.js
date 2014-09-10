@@ -12,6 +12,7 @@ var BACKSPACE = 8
 var UP = 38
 var DOWN = 40
 var COMMA = 188
+var ESCAPE = 27
 
 module.exports = render
 
@@ -25,14 +26,14 @@ function render (state) {
 function renderTextbox (state) {
   var inputWidth = maxWidth([state.query, state.placeholder])
 
-  return h('div.input-area.background', {
+  return h('div.background', {
     'ev-click': function (e) {
       e.currentTarget.children[1].focus()
     }
   }, [
-    h('div.all-selected', [
+    h('div.list', [
       state.value.map(function (v) {
-        return h('span.selected', v.title)
+        return h('span.listitem', v.title)
       })
     ]),
     h('input', {
@@ -52,7 +53,7 @@ function renderTextbox (state) {
 
 function renderListbox (state) {
   return !state.isOpen ? null :
-    h('div.dropdown', renderGroup(state, state.filtered))
+    h('div.listbox', renderGroup(state, state.filtered))
 }
 
 function renderGroup (state, items, base) {
@@ -63,9 +64,9 @@ function renderGroup (state, items, base) {
     path.push(index)
 
     if (opt.options) {
-      return h('div.group', [
-        h('div.groupname', opt.title),
-        h('div.groupoptions', renderGroup(state, opt.options, path))
+      return h('div', [
+        h('label.group-label', opt.title),
+        h('div.group', renderGroup(state, opt.options, path))
       ])
     } else {
       return h('div.option', {
@@ -114,6 +115,9 @@ function inputEvent (state, e) {
       case UP:
         state.events.prev()
         e.preventDefault()
+        break
+      case ESCAPE:
+        e.currentTarget.blur()
         break
     }
   }
