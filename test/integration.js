@@ -500,14 +500,58 @@ test('treat separator key as create', function (t) {
   })
 })
 
-// test('custom filter functions', function (t) {
-//   t.end()
-// })
-
 // test('querying text', function (t) {
 //   t.end()
 // })
 
-// test('custom rendering of line items', function (t) {
-//   t.end()
-// })
+test('custom rendering of line items', function (t) {
+  destroy()
+
+  var options = [{
+    id: 'a',
+    title: 'A'
+  }, {
+    id: 'b',
+    title: 'B'
+  }, {
+    id: 'c',
+    title: 'C'
+  }]
+
+  comp = FancySelect({
+    options: options,
+    placeholder: 'select something',
+    value: []
+  })
+
+  RCSS.injectAll()
+
+  embed(comp.state, FancySelect.render)
+
+  input = el.querySelector('input')
+  input.dispatchEvent(event('focus', {bubbles: true}))
+  // input.dispatchEvent(event('input', {bubbles: true}))
+  // input.dispatchEvent(event('keydown', {keyCode: COMMA}))
+
+  raf(function () {
+    // t.notOk(input.value, 'clear value')
+
+    // selected = el.querySelectorAll('.selected')
+    // t.equal(selected.length, 1)
+    // t.equal(selected[0].innerHTML, 'A')
+
+    // input.dispatchEvent(event('keydown', {keyCode: COMMA}))
+
+    raf(function () {
+      // selected = el.querySelectorAll('.selected')
+      // t.equal(selected.length, 2)
+      // t.equal(selected[0].innerHTML, 'A')
+      // t.equal(selected[1].innerHTML, 'B')
+
+      t.end()
+    })
+  })
+})
+
+// idea: require('fancy-select/default-style')
+// idea: require('fancy-select/another-style')

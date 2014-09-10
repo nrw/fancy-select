@@ -13,45 +13,78 @@ var COMMA = 188
 module.exports = render
 
 function render (state) {
-  return h('div.fancy-select', {
-  }, [
-    h('div.input-area', {
-      className: styles.background.className,
-      'ev-click': function (e) {
-        e.currentTarget.children[1].focus()
-      }
-    }, [
-      h('div.all-selected', {
-        className: styles.allSelected.className
-      }, [
-        state.value.map(function (v) {
-          return h('span.selected', {
-            className: styles.selected.className
-          }, v.title)
-        })
-      ]),
-      h('input', {
-        type: 'text',
-        name: 'query',
-        value: state.query,
-        autocomplete: 'off',
-        placeholder: state.placeholder,
-        style: {
-          width: maxWidth([state.query, state.placeholder]) + 'px'
-        },
-        className: styles.input.className,
-        'ev-event': inputEvent.bind(null, state),
-        'ev-input': mercury.valueEvent(state.events.input, {
-          preventDefault: false
-        })
+  return h('div.fancy-select', [
+    renderTextbox(state),
+    renderListbox(state)
+  ])
+}
 
+function renderTextbox (state) {
+  var inputWidth = maxWidth([state.query, state.placeholder])
+
+  return h('div.input-area', {
+    className: styles.background.className,
+    'ev-click': function (e) {
+      e.currentTarget.children[1].focus()
+    }
+  }, [
+    h('div.all-selected', {
+      className: styles.allSelected.className
+    }, [
+      state.value.map(function (v) {
+        return h('span.selected', {
+          className: styles.selected.className
+        }, v.title)
       })
     ]),
-    state.isOpen ? h('div.dropdown', {
-    }, [
-      renderGroup(state, state.filtered)
-    ]) : null
+    h('input', {
+      type: 'text',
+      name: 'query',
+      value: state.query,
+      autocomplete: 'off',
+      placeholder: state.placeholder,
+      style: {width: inputWidth + 'px'},
+      className: styles.input.className,
+      'ev-event': inputEvent.bind(null, state),
+      'ev-input': mercury.valueEvent(state.events.input, {
+        preventDefault: false
+      })
+    })
   ])
+}
+
+function renderListbox (state) {
+  return !state.isOpen ? null :
+    h('div.dropdown', renderGroup(state, state.filtered))
+}
+
+function renderGroup (state, items, base) {
+  base = base || []
+
+  return items.map(function (opt, index) {
+    var path = base.slice(0)
+    path.push(index)
+
+    if (opt.options) {
+      return h('div.group', [
+        h('div.groupname', opt.title),
+        h('div.groupoptions', renderGroup(state, opt.options, path))
+      ])
+    } else {
+      var focusClass = opt.id && arrayEqual(path, state.active) ?
+        styles.focused.className + ' focused' : ''
+
+      return h('div.option', {
+        className: [styles.option.className, focusClass].join(' '),
+        tabIndex: 1000,
+        'ev-click': function (e) {
+          state.events.select(path)
+          e.currentTarget.parentNode.parentNode
+            .children[0].children[1].focus()
+        }
+      }, opt.title)
+    }
+  })
 }
 
 function inputEvent (state, e) {
@@ -90,36 +123,6 @@ function inputEvent (state, e) {
         break
     }
   }
-}
-
-function renderGroup (state, data, path) {
-  path = path || []
-
-  return data.map(function (opt, index) {
-    if (opt.options) {
-      return h('div.group', [
-        h('div.groupname', opt.title),
-        h('div.groupoptions', renderGroup(state, opt.options, path.concat([
-          index
-        ]).slice(0)))
-      ])
-    } else {
-      var currentPath = path.concat([index])
-      var focusClass = opt.id &&
-        arrayEqual(currentPath, state.active) ?
-        styles.focused.className + ' focused' : ''
-
-      return h('div.option', {
-        className: [styles.option.className, focusClass].join(' '),
-        tabIndex: 1000,
-        'ev-click': function (e) {
-          state.events.select(currentPath)
-          e.currentTarget.parentNode.parentNode
-            .children[0].children[1].focus()
-        }
-      }, opt.title)
-    }
-  })
 }
 
 function maxWidth (strs) {
