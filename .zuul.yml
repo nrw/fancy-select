@@ -4,8 +4,10 @@ browsers:
   - name: chrome
     version: latest
   - name: firefox
-    version: latest
+    version: 27..latest
   - name: iphone
     version: latest
   - name: ie
+    version: 9..latest
+  - name: opera
     version: latest
