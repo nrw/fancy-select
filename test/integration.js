@@ -49,7 +49,7 @@ test('click select', function (t) {
     }]
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp.state, comp.render)
 
   selected = el.querySelectorAll('.listitem')
   t.equal(selected.length, 1)
@@ -292,7 +292,7 @@ test('allows groups', function (t) {
     value: [{id: 'a', title: 'A'}]
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp.state, comp.render)
 
   input = el.querySelector('input')
 
@@ -358,7 +358,7 @@ test('creates unknown options', function (t) {
     }
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp.state, comp.render)
 
   input = el.querySelector('input')
 
@@ -419,7 +419,7 @@ test('dynamic placeholder text', function (t) {
     }
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp.state, comp.render)
 
   input = el.querySelector('input')
 
@@ -465,7 +465,7 @@ test('treat separator key as create', function (t) {
     value: []
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp.state, comp.render)
 
   input = el.querySelector('input')
   input.value = 'a'
@@ -537,7 +537,7 @@ test('custom rendering of line items', function (t) {
     opts.splice(data.path[data.path.length - 1], 1)
     comp.setOptions(base)
   }
-  embed(comp.state, FancySelect.render)
+  embed(comp.state, comp.render)
 
   input = el.querySelector('input')
   input.dispatchEvent(event('focus', {bubbles: true}))
@@ -593,7 +593,7 @@ test('empty test', function (t) {
     placeholder: 'pick some things'
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp.state, comp.render)
 
   input = el.querySelector('input')
 

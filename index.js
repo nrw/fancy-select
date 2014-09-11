@@ -5,7 +5,7 @@ var stringWidth = require('styled-string-width')
 var slice = Array.prototype.slice
 var Update = require('./update')
 
-FancySelect.render = require('./render')
+var render = require('./render')
 
 var OptionTree = require('option-tree')
 
@@ -50,9 +50,7 @@ function FancySelect (data) {
   var placeholder = mercury.value(data.placeholder || '')
 
   var state = mercury.struct({
-    tree: tree,
     events: events,
-    templates: data.templates,
 
     value: tree.state.value,
     filtered: tree.state.filtered,
@@ -77,16 +75,20 @@ function FancySelect (data) {
   })
 
   // wire up events
-  for (var k in Update) {
-    if (typeof events[k] === 'function') {
-      events[k](Update[k].bind(null, state))
-    } else {
-      events[k] = Update[k].bind(null, state)
-    }
-  }
+  events.select(Update.select.bind(null, state, tree))
+  events.backspace(Update.backspace.bind(null, state, tree))
+  events.input(Update.input.bind(null, state, tree))
+  events.next(Update.next.bind(null, state, tree))
+  events.prev(Update.prev.bind(null, state, tree))
+
+  events.focusBackground = Update.focusBackground.bind(null, state)
+  events.inputEvent = Update.inputEvent.bind(null, state)
+  events.setOpen = Update.setOpen.bind(null, state)
+  events.clickOption = Update.clickOption.bind(null, state)
 
   return {
     state: state,
+    render: render(data.templates),
     setOptions: tree.setOptions,
     setQuery: tree.setQuery
   }

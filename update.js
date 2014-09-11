@@ -19,31 +19,31 @@ function focusBackground (state, e) {
   focusInput(state, e.currentTarget)
 }
 
-function select (state, active) {
-  state.tree.select.apply(null, slice.call(arguments, 1))
-  state.tree.setQuery('')
+function select (state, tree, active) {
+  tree.select.apply(null, slice.call(arguments, 2))
+  tree.setQuery('')
 }
 
-function backspace (state) {
+function backspace (state, tree) {
   if (!state.query()) {
-    state.tree.pop()
+    tree.pop()
   }
 }
 
-function input (state, val) {
-  state.tree.setQuery(val.query)
+function input (state, tree, val) {
+  tree.setQuery(val.query)
+}
+
+function next (state, tree) {
+  tree.next()
+}
+
+function prev (state, tree) {
+  tree.prev()
 }
 
 function setOpen (state, open) {
   state.isOpen.set(open)
-}
-
-function next (state) {
-  state.tree.next()
-}
-
-function prev (state) {
-  state.tree.prev()
 }
 
 function clickOption (state, path, e) {

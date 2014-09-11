@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node index.js",
     "test": "zuul -- test/index.js",
-    "test-local": "run-browser test/index.js"
+    "test-local": "run-browser test/index.js",
+    "test-phantom": "run-browser test/index.js -b"
   },
   "dependencies": {
     "array-equal": "^1.0.0",

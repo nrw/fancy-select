@@ -8,18 +8,22 @@ var h = mercury.h
 var insertCss = require('insert-css')
 insertCss(fs.readFileSync(__dirname + '/styles/core.css', 'utf8'))
 
-module.exports = render
+module.exports = setup
 
-function render (state) {
-  var temp = template.bind(null, state)
-  return template(state, 'combobox')
+function setup (overrides) {
+  return render.bind(null, overrides)
 }
 
-function template (state, name) {
-  var temp = state.templates && state.templates[name] ?
-    state.templates[name] : templates[name]
-  return temp.apply(null, [state, template.bind(null, state)]
-    .concat(slice.call(arguments, 2))
+function render (overrides, state) {
+  var temp = template.bind(null, state)
+  return template(overrides, state, 'combobox')
+}
+
+function template (overrides, state, name) {
+  var temp = overrides && overrides[name] ?
+    overrides[name] : templates[name]
+  return temp.apply(null, [state, template.bind(null, overrides, state)]
+    .concat(slice.call(arguments, 3))
   )
 }
 
