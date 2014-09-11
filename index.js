@@ -3,6 +3,7 @@ var document = require('global/document')
 var cloneDeep = require('lodash.clonedeep')
 var stringWidth = require('styled-string-width')
 var slice = Array.prototype.slice
+var Update = require('./update')
 
 FancySelect.render = require('./view')
 
@@ -41,45 +42,23 @@ function FancySelect (data) {
 
   var tree = OptionTree(data)
 
-  var events = {
-    backspace: mercury.input(),
-    select: mercury.input(),
-    dropdown: mercury.input(),
-    input: mercury.input(),
-    refocus: mercury.input(),
-    close: mercury.input(),
-    next: tree.next,
-    prev: tree.prev,
-    readPath: function (data, path) {
-      return NavTree(data).readPath(path)
-    }
-  }
-
-  events.select(function () {
-    tree.select.apply(null, slice.call(arguments))
-    tree.setQuery('')
-  })
-  events.backspace(function () {
-    if (!state.query()) tree.pop()
-  })
-
-  events.input(function (val) {
-    tree.setQuery(val.query)
-  })
-
-  events.dropdown(function (open) {
-    state.isOpen.set(open)
-  })
+  var events = mercury.input([
+    'backspace', 'select', 'dropdown', 'input',
+    'refocus', 'close', 'next', 'prev'
+  ])
 
   var placeholder = mercury.value(data.placeholder || '')
 
   var state = mercury.struct({
+    tree: tree,
     events: events,
+
     value: tree.state.value,
     filtered: tree.state.filtered,
     query: tree.state.query,
     active: tree.state.active,
     options: tree.state.options,
+
     isOpen: mercury.value(true),
 
     placeholder: placeholder,
@@ -95,6 +74,15 @@ function FancySelect (data) {
       return max
     })
   })
+
+  // wire up events
+  for (var k in Update) {
+    if (typeof events[k] === 'function') {
+      events[k](Update[k].bind(null, state))
+    } else {
+      events[k] = Update[k].bind(null, state)
+    }
+  }
 
   return {
     state: state,
