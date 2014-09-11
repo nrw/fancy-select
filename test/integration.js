@@ -4,6 +4,8 @@ var mercury = require('mercury')
 var raf = require('raf')
 var test = require('tape')
 
+var h = mercury.h
+
 var ENTER = 13
 var BACKSPACE = 8
 var UP = 38
@@ -490,10 +492,6 @@ test('treat separator key as create', function (t) {
   })
 })
 
-// test('querying text', function (t) {
-//   t.end()
-// })
-
 test('custom rendering of line items', function (t) {
   destroy()
 
@@ -511,30 +509,57 @@ test('custom rendering of line items', function (t) {
   comp = FancySelect({
     options: options,
     placeholder: 'select something',
-    value: []
+    value: [],
+    templates: {
+      optionlabel: function (state, template, option, path) {
+        return h('span', [
+          h('span.remove', {
+            'ev-click': mercury.event(removeOption, {
+              state: state,
+              option: option,
+              path: path
+            })
+          }, '×'),
+          h('span.optionlabel', ' ' + option.title)
+        ])
+      }
+    }
   })
 
+  function removeOption (data) {
+    var base = data.state.options
+    var opts = base
+
+    for (var i = 0; i < data.path.length - 1; i++) {
+      opts = opts.options[data.path[i]]
+    }
+    opts.splice(data.path[data.path.length - 1], 1)
+    comp.setOptions(base)
+  }
   embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
   input.dispatchEvent(event('focus', {bubbles: true}))
-  // input.dispatchEvent(event('input', {bubbles: true}))
-  // input.dispatchEvent(event('keydown', {keyCode: COMMA}))
 
   raf(function () {
-    // t.notOk(input.value, 'clear value')
+    x = el.querySelector('.remove')
+    t.equal(x.innerHTML, '×')
 
-    // selected = el.querySelectorAll('.listitem')
-    // t.equal(selected.length, 1)
-    // t.equal(selected[0].innerHTML, 'A')
+    options = document.querySelectorAll('.optionlabel')
 
-    // input.dispatchEvent(event('keydown', {keyCode: COMMA}))
+    t.equal(options.length, 3)
+    t.equal(options[0].innerHTML, ' A')
+    t.equal(options[1].innerHTML, ' B')
+    t.equal(options[2].innerHTML, ' C')
+
+    x.dispatchEvent(event('click'))
 
     raf(function () {
-      // selected = el.querySelectorAll('.listitem')
-      // t.equal(selected.length, 2)
-      // t.equal(selected[0].innerHTML, 'A')
-      // t.equal(selected[1].innerHTML, 'B')
+      options = document.querySelectorAll('.optionlabel')
+
+      t.equal(options.length, 2)
+      t.equal(options[0].innerHTML, ' B')
+      t.equal(options[1].innerHTML, ' C')
 
       t.end()
     })
@@ -543,61 +568,3 @@ test('custom rendering of line items', function (t) {
 
 // idea: require('fancy-select/default-style')
 // idea: require('fancy-select/another-style')
-
-
-test('allows groups', function (t) {
-  destroy()
-
-  comp = FancySelect({
-    options: [{
-      title: 'first',
-      options: [
-        {id: 'a', title: 'A'},
-        {id: 'b', title: 'B'}
-      ]
-    }, {
-      title: 'second',
-      options: [
-        {id: 'c', title: 'C'}
-      ]
-    }, {
-      title: 'third',
-      options: [
-        {id: 'd', title: 'D'},
-        {id: 'e', title: 'E'}
-      ]
-    }],
-    value: [{id: 'a', title: 'A'}]
-  })
-
-  embed(comp.state, FancySelect.render)
-
-  input = el.querySelector('input')
-
-  input.dispatchEvent(event('focus', {bubbles: true}))
-
-  raf(function () {
-    t.ok(el.querySelector('.listbox'))
-
-    options = el.querySelectorAll('.option')
-    t.equal(options.length, 4)
-    t.equal(options[0].innerHTML, 'B')
-    t.equal(options[1].innerHTML, 'C')
-    t.equal(options[2].innerHTML, 'D')
-    t.equal(options[3].innerHTML, 'E')
-
-    input.value = 'se'
-    input.dispatchEvent(event('input', {bubbles: true}))
-
-    raf(function () {
-      options = el.querySelectorAll('.option')
-      t.equal(options.length, 1)
-      t.equal(options[0].innerHTML, 'C')
-
-      var groups = el.querySelectorAll('.group-label')
-      t.equal(groups.length, 1)
-      t.equal(groups[0].innerHTML, 'second')
-      t.end()
-    })
-  })
-})

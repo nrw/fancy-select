@@ -5,7 +5,7 @@ var stringWidth = require('styled-string-width')
 var slice = Array.prototype.slice
 var Update = require('./update')
 
-FancySelect.render = require('./view')
+FancySelect.render = require('./render')
 
 var OptionTree = require('option-tree')
 
@@ -52,6 +52,7 @@ function FancySelect (data) {
   var state = mercury.struct({
     tree: tree,
     events: events,
+    templates: data.templates,
 
     value: tree.state.value,
     filtered: tree.state.filtered,

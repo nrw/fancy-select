@@ -15,8 +15,8 @@ module.exports = {
   clickOption: clickOption
 }
 
-function focusBackground (e) {
-  e.currentTarget.children[1].focus()
+function focusBackground (state, e) {
+  focusInput(state, e.currentTarget)
 }
 
 function select (state, active) {
