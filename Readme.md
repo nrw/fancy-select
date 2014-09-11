@@ -2,12 +2,3 @@
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/fancy-select.svg)](https://saucelabs.com/u/fancy-select)
 
-Structure notes
-
-- container
-  - visible box with outline
-    - selected values
-    - text input
-  - dropdown
-    - groups
-      - options
