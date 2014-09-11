@@ -72,7 +72,7 @@ function FancySelect (data) {
         one = stringWidth(str, '.fancy-select input')
         if (one > max) max = one
       })
-      return max
+      return max + 10
     })
   })
 

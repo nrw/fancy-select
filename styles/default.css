@@ -1,0 +1,64 @@
+.fancy-select {
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+}
+.fancy-select .background {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.1);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.1);
+  padding: 0 0.2em;
+}
+.fancy-select input[type=text] {
+  min-height: 2em;
+  margin-left: 0.2em;
+}
+.fancy-select .grouplabel {
+  font-weight: bold;
+  display: block;
+  padding: 0.4em 0.8em;
+  border-top: 1px solid #eee;
+  font-size: 0.9em;
+  color: #333;
+}
+.fancy-select .listbox {
+  border: 1px solid #ddd;
+  border-top-width: 0;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+}
+.fancy-select .listitem {
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  border: 1px solid #1272bb;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.7);
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  background-color: #178ee9;
+  background-image: -webkit-linear-gradient(bottom, #178ee9, #45a5ed);
+  background-image: -moz-linear-gradient(bottom, #178ee9, #45a5ed);
+  background-image: -o-linear-gradient(bottom, #178ee9, #45a5ed);
+  background-image: -ms-linear-gradient(bottom, #178ee9, #45a5ed);
+  background-image: linear-gradient(to top, #178ee9, #45a5ed);
+  padding: 0.3em 0.8em;
+  margin: 0 0.2em 0 0;
+}
+.fancy-select .option {
+  padding: 0.4em 0.8em;
+  color: #333;
+}
+.fancy-select .focused {
+  background: #fafdff;
+}

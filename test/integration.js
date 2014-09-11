@@ -13,6 +13,7 @@ var DOWN = 40
 var COMMA = 188
 
 var FancySelect = require('../')
+require('../style') // include styles
 
 var comp, el, selected, input, options, div, remove
 
@@ -315,7 +316,7 @@ test('allows groups', function (t) {
       t.equal(options.length, 1)
       t.equal(options[0].innerHTML, 'C')
 
-      var groups = el.querySelectorAll('.group-label')
+      var groups = el.querySelectorAll('.grouplabel')
       t.equal(groups.length, 1)
       t.equal(groups[0].innerHTML, 'second')
       t.end()
@@ -566,5 +567,39 @@ test('custom rendering of line items', function (t) {
   })
 })
 
-// idea: require('fancy-select/default-style')
-// idea: require('fancy-select/another-style')
+test('empty test', function (t) {
+  destroy()
+
+  comp = FancySelect({
+    options: [{
+      title: 'first',
+      options: [
+        {id: 'a', title: 'A'},
+        {id: 'b', title: 'B'}
+      ]
+    }, {
+      title: 'second',
+      options: [
+        {id: 'c', title: 'C'}
+      ]
+    }, {
+      title: 'third',
+      options: [
+        {id: 'd', title: 'D'},
+        {id: 'e', title: 'E'}
+      ]
+    }],
+    value: [{id: 'a', title: 'A'}],
+    placeholder: 'pick some things'
+  })
+
+  embed(comp.state, FancySelect.render)
+
+  input = el.querySelector('input')
+
+  input.dispatchEvent(event('focus', {bubbles: true}))
+
+  raf(function () {
+    t.end()
+  })
+})

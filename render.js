@@ -51,8 +51,8 @@ var templates = {
       var path = base.slice(0).concat(index)
 
       if (option.options) {
-        return h('div', [
-          h('label.group-label', option.title),
+        return h('div.groupbox', [
+          h('label.grouplabel', option.title),
           h('div.group', template('group', option.options, path))
         ])
       } else {
