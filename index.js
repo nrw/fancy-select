@@ -61,7 +61,7 @@ function FancySelect (data) {
     isOpen: mercury.value(true),
 
     placeholder: placeholder,
-    separator: mercury.value(data.separator || ','),
+    separator: mercury.value(data.separator || 188),
     inputWidth: mercury.computed([
       tree.state.query, placeholder
     ], function maxWidth () {

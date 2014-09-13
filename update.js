@@ -1,7 +1,7 @@
 var slice = Array.prototype.slice
 var mutableFocus = require('./mutable-focus')
 
-var Key = {ENTER: 13, BACKSPACE: 8, UP: 38, DOWN: 40, COMMA: 188, ESCAPE: 27}
+var Key = {ENTER: 13, BACKSPACE: 8, UP: 38, DOWN: 40, ESCAPE: 27}
 
 module.exports = {
   focusBackground: focusBackground,
@@ -79,7 +79,7 @@ var textboxEvents = {
       case Key.BACKSPACE:
         state.events.backspace()
         break
-      case Key.COMMA:
+      case state.separator():
       case Key.ENTER:
         state.events.select(state.active())
         e.preventDefault()

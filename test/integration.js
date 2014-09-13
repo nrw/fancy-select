@@ -329,8 +329,7 @@ test('creates unknown options', function (t) {
 
   var options = [{
     id: '__create__',
-    title: 'create a new item',
-    alwaysShow: true
+    title: 'create a new item'
   }, {
     id: 'a',
     title: 'A'
@@ -561,6 +560,55 @@ test('custom rendering of line items', function (t) {
       t.equal(options.length, 2)
       t.equal(options[0].innerHTML, ' B')
       t.equal(options[1].innerHTML, ' C')
+
+      t.end()
+    })
+  })
+})
+
+test('custom separator', function (t) {
+  destroy()
+
+  var options = [{
+    id: 'a',
+    title: 'A'
+  }, {
+    id: 'b',
+    title: 'B'
+  }, {
+    id: 'c',
+    title: 'C'
+  }]
+
+  comp = FancySelect({
+    options: options,
+    placeholder: 'select something',
+    value: [],
+    separator: 191 // slash
+  })
+
+  embed(comp.state, comp.render)
+
+  input = el.querySelector('input')
+  input.value = 'a'
+  input.dispatchEvent(event('input', {bubbles: true}))
+  input.dispatchEvent(event('focus', {bubbles: true}))
+  input.dispatchEvent(event('keydown', {keyCode: 191}))
+
+  raf(function () {
+    t.notOk(input.value, 'clear value')
+
+    selected = el.querySelectorAll('.listitem')
+    t.equal(selected.length, 1)
+    t.equal(selected[0].innerHTML, 'A')
+
+    input.dispatchEvent(event('keydown', {keyCode: 191}))
+
+    raf(function () {
+      selected = el.querySelectorAll('.listitem')
+      t.equal(selected.length, 2)
+      t.equal(selected[0].innerHTML, 'A')
+      t.equal(selected[1].innerHTML, 'B')
 
       t.end()
     })
