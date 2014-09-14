@@ -20,7 +20,8 @@
     "mercury": "^6.0.1",
     "next-tick": "^0.2.2",
     "option-tree": "^0.2.0",
-    "styled-string-width": "^0.1.2"
+    "styled-string-width": "^0.1.2",
+    "virtual-hyperscript": "^4.5.0"
   },
   "devDependencies": {
     "brfs": "^1.2.0",
