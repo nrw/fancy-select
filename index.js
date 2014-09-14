@@ -52,16 +52,17 @@ function FancySelect (data) {
   var state = mercury.struct({
     events: events,
 
+    options: tree.state.options,
     value: tree.state.value,
     filtered: tree.state.filtered,
     query: tree.state.query,
     active: tree.state.active,
-    options: tree.state.options,
 
     isOpen: mercury.value(true),
 
     placeholder: placeholder,
     separator: mercury.value(data.separator || 188),
+
     inputWidth: mercury.computed([
       tree.state.query, placeholder
     ], function maxWidth () {
@@ -86,10 +87,21 @@ function FancySelect (data) {
   events.setOpen = Update.setOpen.bind(null, state)
   events.clickOption = Update.clickOption.bind(null, state)
 
+
+
   return {
+    render: function (state) {
+      return render(data.templates, state)
+    },
     state: state,
-    render: render(data.templates),
+
     setOptions: tree.setOptions,
-    setQuery: tree.setQuery
+    setValue: tree.setValue,
+    setFilter: tree.setFilter,
+    setActions: tree.setActions,
+    setQuery: tree.setQuery,
+    setTemplates: function (templates) {
+      data.templates = templates
+    }
   }
 }

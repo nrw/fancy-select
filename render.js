@@ -8,11 +8,7 @@ var h = mercury.h
 var insertCss = require('insert-css')
 insertCss(fs.readFileSync(__dirname + '/styles/core.css', 'utf8'))
 
-module.exports = setup
-
-function setup (overrides) {
-  return render.bind(null, overrides)
-}
+module.exports = render
 
 function render (overrides, state) {
   var temp = template.bind(null, state)
