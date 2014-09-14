@@ -87,8 +87,6 @@ function FancySelect (data) {
   events.setOpen = Update.setOpen.bind(null, state)
   events.clickOption = Update.clickOption.bind(null, state)
 
-
-
   return {
     render: function (state) {
       return render(data.templates, state)
