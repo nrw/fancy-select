@@ -25,7 +25,7 @@ var component = FancySelect({
   placeholder: 'Choose Two'
 })
 
-mercury.app(document.body, component.state, component.render)
+mercury.app(document.body, component.state, FancySelect.render)
 ```
 
 # Usage
@@ -45,7 +45,7 @@ An instance of `observ-struct`. Holds the state for this component. All parts of
 - `state.placeholder` the current placeholder text
 - `state.separator` the key code for the current separator
 
-### component.render
+### FancySelect.render
 
 The render function to be passed to a `main-loop` or placed into another template.
 
@@ -58,7 +58,10 @@ All the config options can be changed on the fly with the `set` function with a 
 - `component.setFilter(filter)`
 - `component.setActions(actions)`
 - `component.setQuery(query)`
-- `component.setTemplates(templates)`
+
+To create a custom render function, call FancySelect.customRender(templates)
+
+- `var render = FancySelect.customRender(templates)`
 
 ### config.options = []
 
@@ -86,7 +89,7 @@ The function to use when filtering which options are available to select. Gets p
 
 A hash of option ids to the functions that should be called when that `id` is selected. Will be passed to [`option-select-action`](https://github.com/nrw/option-select-action).
 
-### config.templates = {}
+### templates = {}
 
 A hash of template names to render functions. The tree of default templates is nested in this order with these names:
 
@@ -103,6 +106,8 @@ combobox
 A render function is passed the `state`, a `template` function, for inserting other templates, and then any other arguments it was called with.
 
 ```js
+var h = require('virtual-hyperscript')
+
 var templates = {
   option: function (state, template, option, path) {
     return h('div.option', [
@@ -113,6 +118,8 @@ var templates = {
     ])
   }
 }
+
+var render = FancySelect.customRender(templates)
 ```
 
 ### config.placeholder = ''

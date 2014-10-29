@@ -49,7 +49,7 @@ test('click select', function (t) {
     }]
   })
 
-  embed(comp.state, comp.render)
+  embed(comp.state, FancySelect.render)
 
   selected = el.querySelectorAll('.listitem')
   t.equal(selected.length, 1)
@@ -292,7 +292,7 @@ test('allows groups', function (t) {
     value: [{id: 'a', title: 'A'}]
   })
 
-  embed(comp.state, comp.render)
+  embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
 
@@ -357,7 +357,7 @@ test('creates unknown options', function (t) {
     }
   })
 
-  embed(comp.state, comp.render)
+  embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
 
@@ -418,7 +418,7 @@ test('dynamic placeholder text', function (t) {
     }
   })
 
-  embed(comp.state, comp.render)
+  embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
 
@@ -464,7 +464,7 @@ test('treat separator key as create', function (t) {
     value: []
   })
 
-  embed(comp.state, comp.render)
+  embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
   input.value = 'a'
@@ -509,20 +509,21 @@ test('custom rendering of line items', function (t) {
   comp = FancySelect({
     options: options,
     placeholder: 'select something',
-    value: [],
-    templates: {
-      optionlabel: function (state, template, option, path) {
-        return h('span', [
-          h('span.remove', {
-            'ev-click': mercury.event(removeOption, {
-              state: state,
-              option: option,
-              path: path
-            })
-          }, '×'),
-          h('span.optionlabel', ' ' + option.title)
-        ])
-      }
+    value: []
+  })
+
+  var render = FancySelect.customRender({
+    optionlabel: function (state, template, option, path) {
+      return h('span', [
+        h('span.remove', {
+          'ev-click': mercury.event(removeOption, {
+            state: state,
+            option: option,
+            path: path
+          })
+        }, '×'),
+        h('span.optionlabel', ' ' + option.title)
+      ])
     }
   })
 
@@ -536,7 +537,8 @@ test('custom rendering of line items', function (t) {
     opts.splice(data.path[data.path.length - 1], 1)
     comp.setOptions(base)
   }
-  embed(comp.state, comp.render)
+
+  embed(comp.state, render)
 
   input = el.querySelector('input')
   input.dispatchEvent(event('focus', {bubbles: true}))
@@ -587,7 +589,7 @@ test('custom separator', function (t) {
     separator: 191 // slash
   })
 
-  embed(comp.state, comp.render)
+  embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
   input.value = 'a'
@@ -641,7 +643,7 @@ test('empty test', function (t) {
     placeholder: 'pick some things'
   })
 
-  embed(comp.state, comp.render)
+  embed(comp.state, FancySelect.render)
 
   input = el.querySelector('input')
 

@@ -9,6 +9,10 @@ var render = require('./render')
 
 var OptionTree = require('option-tree')
 
+
+FancySelect.render = render.default
+FancySelect.customRender = render.custom
+
 module.exports = FancySelect
 
 function FancySelect (data) {
@@ -88,18 +92,12 @@ function FancySelect (data) {
   events.clickOption = Update.clickOption.bind(null, state)
 
   return {
-    render: function (state) {
-      return render(data.templates, state)
-    },
     state: state,
 
     setOptions: tree.setOptions,
     setValue: tree.setValue,
     setFilter: tree.setFilter,
     setActions: tree.setActions,
-    setQuery: tree.setQuery,
-    setTemplates: function (templates) {
-      data.templates = templates
-    }
+    setQuery: tree.setQuery
   }
 }
