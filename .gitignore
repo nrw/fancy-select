@@ -1,0 +1,5 @@
+Guardfile
+examples/
+node_modules/
+styles/
+test/
