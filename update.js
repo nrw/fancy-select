@@ -1,5 +1,4 @@
 var slice = Array.prototype.slice
-var focusHook = require('virtual-hyperscript/hooks/focus-hook')
 
 var Key = {ENTER: 13, BACKSPACE: 8, UP: 38, DOWN: 40, ESCAPE: 27}
 
@@ -100,7 +99,6 @@ var textboxEvents = {
 }
 
 function inputEvent (state, e) {
-  focusHook()
   if (textboxEvents[e.type]) {
     textboxEvents[e.type](state, e)
   }
