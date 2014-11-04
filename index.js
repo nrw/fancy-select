@@ -62,7 +62,7 @@ function FancySelect (data) {
     query: tree.state.query,
     active: tree.state.active,
 
-    isOpen: mercury.value(true),
+    isOpen: mercury.value(false),
 
     placeholder: placeholder,
     separator: mercury.value(data.separator || 188),
