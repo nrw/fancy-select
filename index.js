@@ -1,14 +1,13 @@
 var mercury = require('mercury')
 var document = require('global/document')
-var cloneDeep = require('lodash.clonedeep')
 var stringWidth = require('styled-string-width')
-var slice = Array.prototype.slice
-var Update = require('./update')
-
-var render = require('./render')
 
 var OptionTree = require('option-tree')
 
+var Update = require('./update')
+var render = require('./render')
+
+var slice = Array.prototype.slice
 
 FancySelect.render = render.default
 FancySelect.customRender = render.custom
@@ -20,11 +19,11 @@ function FancySelect (data) {
 
   data.filter = data.filter || function (opt, query, value) {
     // keep any that start with __
-    if (opt.id && opt.id.indexOf('__') === 0) return {keep: true}
+    if (opt.value && opt.value.indexOf('__') === 0) return {keep: true}
 
     // omit value
     for (var i = value.length - 1; i >= 0; i--) {
-      if (opt.id === value[i].id) {
+      if (opt.value === value[i].value) {
         return {keep: false, passes: false, keepChildren: false}
       }
     }
@@ -35,8 +34,8 @@ function FancySelect (data) {
       return {
         keepChildren: true,
         passes: (
-          (opt.id && regex.test(opt.id)) ||
-          (opt.title && regex.test(opt.title))
+          (opt.value && regex.test(opt.value)) ||
+          (opt.label && regex.test(opt.label))
         )
       }
     } catch (e) {

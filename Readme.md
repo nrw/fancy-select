@@ -13,14 +13,14 @@ require('fancy-select/style') // include default stylesheet
 
 var component = FancySelect({
   options: [{
-    id: 'c',
-    title: 'Consistency'
+    value: 'c',
+    label: 'Consistency'
   }, {
-    id: 'a',
-    title: 'Availability'
+    value: 'a',
+    label: 'Availability'
   }, {
-    id: 'p',
-    title: 'Partition Tolerance'
+    value: 'p',
+    label: 'Partition Tolerance'
   }],
   placeholder: 'Choose Two'
 })
@@ -69,8 +69,8 @@ An array of `option` objects to use as the data source for this combobox. Will b
 
 The properties in an `option` object used by `fancy-select` are:
 
-- `option.id` Any option with an id will be selectable. Options without an `id` will be rendered as option groups.
-- `option.title` By default, will be used as the label for an option
+- `option.value` Any option with a value will be selectable. Options without a `value` will be rendered as option groups.
+- `option.label` By default, will be used as the label for an option
 - `option.options` An array of `option` objects. The children of this option.
 
 ### config.value = []
@@ -81,13 +81,13 @@ An array of `option` objects to use as the initial value. Will be passed to [`op
 
 The function to use when filtering which options are available to select. Gets passed to [`option-tree-filter`](https://github.com/nrw/option-tree-filter). The default filter function includes these rules:
 
-- always show any option whose `id` starts with `__`
-- omit any option whose `id` is identical to an option already in the `value`
-- omit any option whose `id` and `title` do not match the `query` string (case insensiteve).
+- always show any option whose `value` starts with `__`
+- omit any option whose `value` is identical to an option already in the `value`
+- omit any option whose `value` and `label` do not match the `query` string (case insensiteve).
 
 ### config.actions = {}
 
-A hash of option ids to the functions that should be called when that `id` is selected. Will be passed to [`option-select-action`](https://github.com/nrw/option-select-action).
+A hash of option values to the functions that should be called when that `value` is selected. Will be passed to [`option-select-action`](https://github.com/nrw/option-select-action).
 
 ### templates = {}
 

@@ -41,7 +41,7 @@ var templates = {
       'ev-click': state.events.focusBackground
     }, [
       h('div.list', [
-        state.value.map(function (v) { return h('span.listitem', v.title) })
+        state.value.map(function (v) { return h('span.listitem', v.label) })
       ]),
       template('input')
     ])
@@ -58,7 +58,7 @@ var templates = {
 
       if (option.options) {
         return h('div.groupbox', [
-          h('label.grouplabel', option.title),
+          h('label.grouplabel', option.label),
           h('div.group', template('group', option.options, path))
         ])
       } else {
@@ -69,12 +69,12 @@ var templates = {
   option: function (state, template, option, path) {
     return h('div.option', {
       tabIndex: 1000,
-      className: option.id && arrayEqual(path, state.active) ? 'focused' : '',
+      className: option.value && arrayEqual(path, state.active) ? 'focused' : '',
       'ev-click': state.events.clickOption.bind(null, path)
     }, template('optionlabel', option, path))
   },
   optionlabel: function (state, template, option) {
-    return option.title
+    return option.label
   },
   input: function (state, template) {
     return h('input', {

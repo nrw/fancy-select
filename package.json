@@ -16,15 +16,13 @@
     "array-equal": "^1.0.0",
     "global": "^4.2.1",
     "insert-css": "^0.2.0",
-    "lodash.clonedeep": "^2.4.1",
     "mercury": "^6.0.1",
-    "next-tick": "^0.2.2",
-    "option-tree": "^0.2.0",
-    "styled-string-width": "^0.1.2",
-    "virtual-hyperscript": "^4.5.0"
+    "option-tree": "^1.1.0",
+    "brfs": "^1.2.0",
+    "styled-string-width": "^0.1.2"
   },
   "devDependencies": {
-    "brfs": "^1.2.0",
+    "virtual-hyperscript": "^4.5.0",
     "function-bind": "^1.0.0",
     "nib": "^1.0.3",
     "raf": "^2.0.2",

@@ -34,18 +34,18 @@ function destroy () {
 test('click select', function (t) {
   comp = FancySelect({
     options: [{
-      id: 'a',
-      title: 'A'
+      value: 'a',
+      label: 'A'
     }, {
-      id: 'b',
-      title: 'B'
+      value: 'b',
+      label: 'B'
     }, {
-      id: 'c',
-      title: 'C'
+      value: 'c',
+      label: 'C'
     }],
     value: [{
-      id: 'a',
-      title: 'A'
+      value: 'a',
+      label: 'A'
     }]
   })
 
@@ -229,7 +229,7 @@ test('clicking input background focuses input', function (t) {
   t.end()
 })
 
-test('dropdown hides on blur', function (t) {
+test('dropdown hvaluees on blur', function (t) {
   comp.state.value.set([])
   input = el.querySelector('input')
 
@@ -248,7 +248,7 @@ test('dropdown hides on blur', function (t) {
   })
 })
 
-test('dropdown hides on blur', function (t) {
+test('dropdown hvaluees on blur', function (t) {
   comp.state.value.set([])
   input = el.querySelector('input')
 
@@ -272,24 +272,24 @@ test('allows groups', function (t) {
 
   comp = FancySelect({
     options: [{
-      title: 'first',
+      label: 'first',
       options: [
-        {id: 'a', title: 'A'},
-        {id: 'b', title: 'B'}
+        {value: 'a', label: 'A'},
+        {value: 'b', label: 'B'}
       ]
     }, {
-      title: 'second',
+      label: 'second',
       options: [
-        {id: 'c', title: 'C'}
+        {value: 'c', label: 'C'}
       ]
     }, {
-      title: 'third',
+      label: 'third',
       options: [
-        {id: 'd', title: 'D'},
-        {id: 'e', title: 'E'}
+        {value: 'd', label: 'D'},
+        {value: 'e', label: 'E'}
       ]
     }],
-    value: [{id: 'a', title: 'A'}]
+    value: [{value: 'a', label: 'A'}]
   })
 
   embed(comp.state, FancySelect.render)
@@ -328,29 +328,29 @@ test('creates unknown options', function (t) {
   destroy()
 
   var options = [{
-    id: '__create__',
-    title: 'create a new item'
+    value: '__create__',
+    label: 'create a new item'
   }, {
-    id: 'a',
-    title: 'A'
+    value: 'a',
+    label: 'A'
   }, {
-    id: 'b',
-    title: 'B'
+    value: 'b',
+    label: 'B'
   }, {
-    id: 'c',
-    title: 'C'
+    value: 'c',
+    label: 'C'
   }]
 
   comp = FancySelect({
     options: options,
     value: [{
-      id: 'a',
-      title: 'A'
+      value: 'a',
+      label: 'A'
     }],
     actions: {
       __create__: function (obj, query) {
         var opts = comp.state.options()
-        opts.push({id: query, title: query.toUpperCase()})
+        opts.push({value: query, label: query.toUpperCase()})
         comp.setOptions(opts)
         comp.setQuery('')
       }
@@ -389,22 +389,22 @@ test('dynamic placeholder text', function (t) {
   destroy()
 
   var options = [{
-    id: 'a',
-    title: 'A'
+    value: 'a',
+    label: 'A'
   }, {
-    id: 'b',
-    title: 'B'
+    value: 'b',
+    label: 'B'
   }, {
-    id: 'c',
-    title: 'C'
+    value: 'c',
+    label: 'C'
   }]
 
   comp = FancySelect({
     options: options,
     placeholder: 'select first',
     value: [{
-      id: 'a',
-      title: 'A'
+      value: 'a',
+      label: 'A'
     }]
   })
 
@@ -448,14 +448,14 @@ test('treat separator key as create', function (t) {
   destroy()
 
   var options = [{
-    id: 'a',
-    title: 'A'
+    value: 'a',
+    label: 'A'
   }, {
-    id: 'b',
-    title: 'B'
+    value: 'b',
+    label: 'B'
   }, {
-    id: 'c',
-    title: 'C'
+    value: 'c',
+    label: 'C'
   }]
 
   comp = FancySelect({
@@ -496,14 +496,14 @@ test('custom rendering of line items', function (t) {
   destroy()
 
   var options = [{
-    id: 'a',
-    title: 'A'
+    value: 'a',
+    label: 'A'
   }, {
-    id: 'b',
-    title: 'B'
+    value: 'b',
+    label: 'B'
   }, {
-    id: 'c',
-    title: 'C'
+    value: 'c',
+    label: 'C'
   }]
 
   comp = FancySelect({
@@ -522,7 +522,7 @@ test('custom rendering of line items', function (t) {
             path: path
           })
         }, '×'),
-        h('span.optionlabel', ' ' + option.title)
+        h('span.optionlabel', ' ' + option.label)
       ])
     }
   })
@@ -572,14 +572,14 @@ test('custom separator', function (t) {
   destroy()
 
   var options = [{
-    id: 'a',
-    title: 'A'
+    value: 'a',
+    label: 'A'
   }, {
-    id: 'b',
-    title: 'B'
+    value: 'b',
+    label: 'B'
   }, {
-    id: 'c',
-    title: 'C'
+    value: 'c',
+    label: 'C'
   }]
 
   comp = FancySelect({
@@ -622,24 +622,24 @@ test('empty test', function (t) {
 
   comp = FancySelect({
     options: [{
-      title: 'first',
+      label: 'first',
       options: [
-        {id: 'a', title: 'A'},
-        {id: 'b', title: 'B'}
+        {value: 'a', label: 'A'},
+        {value: 'b', label: 'B'}
       ]
     }, {
-      title: 'second',
+      label: 'second',
       options: [
-        {id: 'c', title: 'C'}
+        {value: 'c', label: 'C'}
       ]
     }, {
-      title: 'third',
+      label: 'third',
       options: [
-        {id: 'd', title: 'D'},
-        {id: 'e', title: 'E'}
+        {value: 'd', label: 'D'},
+        {value: 'e', label: 'E'}
       ]
     }],
-    value: [{id: 'a', title: 'A'}],
+    value: [{value: 'a', label: 'A'}],
     placeholder: 'pick some things'
   })
 
