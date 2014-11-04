@@ -1,6 +1,6 @@
 # fancy-select [![build status](https://secure.travis-ci.org/nrw/fancy-select.png)](http://travis-ci.org/nrw/fancy-select)
 
-A unidirectional combobox component based on the aria spec.
+A unidirectional combobox component based on the aria spec. See a [live demo here](http://nrw.github.io/fancy-select/).
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/fancy-select.svg)](https://saucelabs.com/u/fancy-select)
 
