@@ -46,7 +46,7 @@ function run () {
     }]
   })
 
-  hg.app(document.body, comp.state, render)
+  hg.app(document.body, comp, render)
 }
 
 function render (state) {
