@@ -49,7 +49,7 @@ test('click select', function (t) {
     }]
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp, FancySelect.render)
 
   selected = el.querySelectorAll('.listitem')
   t.equal(selected.length, 1)
@@ -58,7 +58,7 @@ test('click select', function (t) {
   input = el.querySelector('input')
   input.dispatchEvent(event('focus', {bubbles: true}))
 
-  t.ok(comp.state().isOpen)
+  t.ok(comp.isOpen())
 
   raf(function () {
     options = document.querySelectorAll('.option')
@@ -151,7 +151,7 @@ test('arrow through dropdown', function (t) {
     t.equal(options[0].innerHTML, 'A')
     t.equal(options[1].innerHTML, 'B')
     t.equal(options[2].innerHTML, 'C')
-    t.equal(document.querySelector('.focused').innerHTML, 'A')
+    t.equal(document.querySelector('.option.focused').innerHTML, 'A', 'focused')
 
     input.dispatchEvent(event('keydown', {keyCode: BACKSPACE}))
 
@@ -160,18 +160,18 @@ test('arrow through dropdown', function (t) {
     input.dispatchEvent(event('keydown', {keyCode: UP}))
 
     raf(function () {
-      t.equal(document.querySelector('.focused').innerHTML, 'A')
+      t.equal(document.querySelector('.option.focused').innerHTML, 'A')
       input.dispatchEvent(event('keydown', {keyCode: DOWN}))
       raf(function () {
-        t.equal(document.querySelector('.focused').innerHTML, 'B')
+        t.equal(document.querySelector('.option.focused').innerHTML, 'B')
         input.dispatchEvent(event('keydown', {keyCode: DOWN}))
 
         raf(function () {
-          t.equal(document.querySelector('.focused').innerHTML, 'C')
+          t.equal(document.querySelector('.option.focused').innerHTML, 'C')
           input.dispatchEvent(event('keydown', {keyCode: DOWN}))
 
           raf(function () {
-            t.equal(document.querySelector('.focused').innerHTML, 'C')
+            t.equal(document.querySelector('.option.focused').innerHTML, 'C')
             t.end()
           })
         })
@@ -230,7 +230,7 @@ test('clicking input background focuses input', function (t) {
 })
 
 test('dropdown hvaluees on blur', function (t) {
-  comp.state.value.set([])
+  comp.value.set([])
   input = el.querySelector('input')
 
   input.dispatchEvent(event('focus', {bubbles: true}))
@@ -249,7 +249,7 @@ test('dropdown hvaluees on blur', function (t) {
 })
 
 test('dropdown hvaluees on blur', function (t) {
-  comp.state.value.set([])
+  comp.value.set([])
   input = el.querySelector('input')
 
   input.dispatchEvent(event('focus', {bubbles: true}))
@@ -292,7 +292,7 @@ test('allows groups', function (t) {
     value: [{value: 'a', label: 'A'}]
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp, FancySelect.render)
 
   input = el.querySelector('input')
 
@@ -349,21 +349,21 @@ test('creates unknown options', function (t) {
     }],
     actions: {
       __create__: function (obj, query) {
-        var opts = comp.state.options()
+        var opts = comp.options()
         opts.push({value: query, label: query.toUpperCase()})
-        comp.setOptions(opts)
-        comp.setQuery('')
+        comp.options.set(opts)
+        comp.query.set('')
       }
     }
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp, FancySelect.render)
 
   input = el.querySelector('input')
 
   input.dispatchEvent(event('focus', {bubbles: true}))
   raf(function () {
-    t.ok(el.querySelector('.listbox'))
+    t.ok(el.querySelector('.listbox'), 'gets listbox')
 
     document.body.dispatchEvent(event('focus', {bubbles: true}))
     input.value = 'e'
@@ -371,7 +371,7 @@ test('creates unknown options', function (t) {
     input.dispatchEvent(event('keydown', {keyCode: ENTER}))
 
     raf(function () {
-      t.ok(el.querySelector('.listbox'))
+      t.ok(el.querySelector('.listbox'), 'gets listbox again')
 
       options = el.querySelectorAll('.option')
       t.equal(options.length, 4)
@@ -408,17 +408,17 @@ test('dynamic placeholder text', function (t) {
     }]
   })
 
-  mercury.watch(comp.state.value, function (val) {
+  mercury.watch(comp.value, function (val) {
     if (val.length === 0) {
-      comp.state.placeholder.set('select first')
+      comp.placeholder.set('select first')
     } else if (val.length === 1) {
-      comp.state.placeholder.set('select second')
+      comp.placeholder.set('select second')
     } else {
-      comp.state.placeholder.set('select another')
+      comp.placeholder.set('select another')
     }
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp, FancySelect.render)
 
   input = el.querySelector('input')
 
@@ -464,7 +464,7 @@ test('treat separator key as create', function (t) {
     value: []
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp, FancySelect.render)
 
   input = el.querySelector('input')
   input.value = 'a'
@@ -535,16 +535,16 @@ test('custom rendering of line items', function (t) {
       opts = opts.options[data.path[i]]
     }
     opts.splice(data.path[data.path.length - 1], 1)
-    comp.setOptions(base)
+    comp.options.set(base)
   }
 
-  embed(comp.state, render)
+  embed(comp, render)
 
   input = el.querySelector('input')
   input.dispatchEvent(event('focus', {bubbles: true}))
 
   raf(function () {
-    x = el.querySelector('.remove')
+    var x = el.querySelector('.remove')
     t.equal(x.innerHTML, '×')
 
     options = document.querySelectorAll('.optionlabel')
@@ -589,7 +589,7 @@ test('custom separator', function (t) {
     separator: 191 // slash
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp, FancySelect.render)
 
   input = el.querySelector('input')
   input.value = 'a'
@@ -643,7 +643,7 @@ test('empty test', function (t) {
     placeholder: 'pick some things'
   })
 
-  embed(comp.state, FancySelect.render)
+  embed(comp, FancySelect.render)
 
   input = el.querySelector('input')
 

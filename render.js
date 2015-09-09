@@ -1,12 +1,17 @@
 var fs = require('fs')
-var mercury = require('mercury')
+var hg = require('mercury')
 var arrayEqual = require('array-equal')
 
 var slice = Array.prototype.slice
-var h = mercury.h
+var h = hg.h
 
 var insertCss = require('insert-css')
+
 insertCss(fs.readFileSync(__dirname + '/styles/core.css', 'utf8'))
+
+var sendContext = hg.BaseEvent(function contextLambda (ev, broadcast) {
+  broadcast(ev)
+})
 
 module.exports = {
   custom: custom,
@@ -22,8 +27,8 @@ function custom (overrides) {
 }
 
 function template (overrides, state, name) {
-  var temp = overrides && overrides[name] ?
-    overrides[name] : templates[name]
+  var temp = overrides && overrides[name]
+    ? overrides[name] : templates[name]
   return temp.apply(null, [state, template.bind(null, overrides, state)]
     .concat(slice.call(arguments, 3))
   )
@@ -31,14 +36,14 @@ function template (overrides, state, name) {
 
 var templates = {
   combobox: function (state, template) {
-    return h('div.fancy-select', [
+    return h('div.fancy-select', {className: state.isOpen ? 'focused' : ''}, [
       template('textbox'),
       template('listbox')
     ])
   },
   textbox: function (state, template) {
     return h('div.background', {
-      'ev-click': state.events.focusBackground
+      'ev-click': sendContext(focusInput)
     }, [
       h('div.list', [
         state.value.map(function (v) { return h('span.listitem', v.label) })
@@ -47,8 +52,8 @@ var templates = {
     ])
   },
   listbox: function (state, template) {
-    return !state.isOpen ? null :
-      h('div.listbox', template('group', state.filtered))
+    return !state.isOpen ? null
+      : h('div.listbox', template('group', state.filtered))
   },
   group: function (state, template, items, base) {
     base = base || []
@@ -70,7 +75,8 @@ var templates = {
     return h('div.option', {
       tabIndex: 1000,
       className: option.value && arrayEqual(path, state.active) ? 'focused' : '',
-      'ev-click': state.events.clickOption.bind(null, path)
+      'ev-click': hg.sendClick(state.channels.clickOption, path),
+      'ev-event': sendContext(focusOnClick)
     }, template('optionlabel', option, path))
   },
   optionlabel: function (state, template, option) {
@@ -88,10 +94,30 @@ var templates = {
         width: state.inputWidth + 'px'
       },
 
-      'ev-event': state.events.inputEvent,
-      'ev-input': mercury.valueEvent(state.events.input, {
-        preventDefault: false
-      })
+      'ev-event': sendContext(state.channels.inputEvent),
+      'ev-input': hg.sendValue(state.channels.setQuery, {})
     })
   }
+}
+
+function focusInput (ev) {
+  var node = ev.currentTarget
+
+  while (node && !isRootNode(node)) {
+    node = node.parentNode
+  }
+
+  if (node) {
+    node.children[0].children[1].focus()
+  }
+}
+
+function focusOnClick (ev) {
+  if (ev.type === 'click') {
+    focusInput(ev)
+  }
+}
+
+function isRootNode (node) {
+  return node.className.split(/\s/).indexOf('fancy-select') !== -1
 }

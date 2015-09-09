@@ -14,21 +14,21 @@
   },
   "dependencies": {
     "array-equal": "^1.0.0",
+    "brfs": "^1.2.0",
     "global": "^4.2.1",
     "insert-css": "^0.2.0",
-    "mercury": "^6.0.1",
+    "mercury": "^14.0.0",
     "option-tree": "^1.1.0",
-    "brfs": "^1.2.0",
     "styled-string-width": "^0.1.2"
   },
   "devDependencies": {
-    "virtual-hyperscript": "^4.5.0",
     "function-bind": "^1.0.0",
     "nib": "^1.0.3",
     "raf": "^2.0.2",
     "synthetic-dom-events": "^0.2.2",
-    "tape": "^2.14.0",
-    "zuul": "^1.10.1"
+    "tape": "^4.2.0",
+    "virtual-hyperscript": "^4.5.0",
+    "zuul": "^3.4.0"
   },
   "browserify": {
     "transform": [

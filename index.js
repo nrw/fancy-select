@@ -1,13 +1,10 @@
-var mercury = require('mercury')
-var document = require('global/document')
+var hg = require('mercury')
 var stringWidth = require('styled-string-width')
-
 var OptionTree = require('option-tree')
 
-var Update = require('./update')
 var render = require('./render')
 
-var slice = Array.prototype.slice
+var Key = {ENTER: 13, BACKSPACE: 8, UP: 38, DOWN: 40, ESCAPE: 27}
 
 FancySelect.render = render.default
 FancySelect.customRender = render.custom
@@ -16,87 +13,131 @@ module.exports = FancySelect
 
 function FancySelect (data) {
   data = data || {}
-
-  data.filter = data.filter || function (opt, query, value) {
-    // keep any that start with __
-    if (opt.value && opt.value.indexOf('__') === 0) return {keep: true}
-
-    // omit value
-    for (var i = value.length - 1; i >= 0; i--) {
-      if (opt.value === value[i].value) {
-        return {keep: false, passes: false, keepChildren: false}
-      }
-    }
-
-    // match query
-    try {
-      var regex = new RegExp(query || '', 'i')
-      return {
-        keepChildren: true,
-        passes: (
-          (opt.value && regex.test(opt.value)) ||
-          (opt.label && regex.test(opt.label))
-        )
-      }
-    } catch (e) {
-      return {passes: false}
-    }
-  }
+  data.filter = data.filter || defaultFilter
 
   var tree = OptionTree(data)
 
-  var events = mercury.input([
-    'backspace', 'select', 'dropdown', 'input',
-    'refocus', 'close', 'next', 'prev'
-  ])
+  var placeholder = hg.value(data.placeholder || '')
+  var separator = hg.value(data.separator || 188)
+  var isOpen = hg.value(false)
 
-  var placeholder = mercury.value(data.placeholder || '')
+  var inputWidth = hg.computed([tree.query, placeholder], function (s1, s2) {
+    var el = '.fancy-select input'
+    var width = Math.max(stringWidth(s1, el), stringWidth(s2, el))
 
-  var state = mercury.struct({
-    events: events,
-
-    options: tree.state.options,
-    value: tree.state.value,
-    filtered: tree.state.filtered,
-    query: tree.state.query,
-    active: tree.state.active,
-
-    isOpen: mercury.value(false),
-
-    placeholder: placeholder,
-    separator: mercury.value(data.separator || 188),
-
-    inputWidth: mercury.computed([
-      tree.state.query, placeholder
-    ], function maxWidth () {
-      var one, max = 0, strs = slice.call(arguments)
-      strs.forEach(function (str) {
-        one = stringWidth(str, '.fancy-select input')
-        if (one > max) max = one
-      })
-      return max + 10
-    })
+    return width + 10 // hack to fix browser subtleties
   })
 
-  // wire up events
-  events.select(Update.select.bind(null, state, tree))
-  events.backspace(Update.backspace.bind(null, state, tree))
-  events.input(Update.input.bind(null, state, tree))
-  events.next(Update.next.bind(null, state, tree))
-  events.prev(Update.prev.bind(null, state, tree))
+  return hg.struct({
+    channels: {
+      clickOption: function (path) {
+        tree.channels.select(path)
+      },
+      setQuery: function (data) {
+        tree.query.set(data.query)
+      },
+      next: function () {
+        tree.channels.next()
+      },
+      inputEvent: inputEvent
+    },
 
-  events.focusBackground = Update.focusBackground.bind(null, state)
-  events.inputEvent = Update.inputEvent.bind(null, state)
-  events.setOpen = Update.setOpen.bind(null, state)
-  events.clickOption = Update.clickOption.bind(null, state)
+    // local
+    isOpen: isOpen,
+    separator: separator,
 
-  return {
-    state: state,
+    placeholder: placeholder,
+    inputWidth: inputWidth,
 
-    setOptions: tree.setOptions,
-    setValue: tree.setValue,
-    setFilter: tree.setFilter,
-    setActions: tree.setActions,
-    setQuery: tree.setQuery
+    // exported from option tree
+    options: tree.options,
+    value: tree.value,
+    filtered: tree.filtered,
+    query: tree.query,
+    active: tree.active,
+    actions: tree.actions
+  })
+
+  function inputEvent (e) {
+    if (e.type === 'focus') {
+      isOpen.set(true)
+    }
+
+    if (e.type === 'blur') {
+      blur(e)
+    }
+
+    if (e.type === 'keydown') {
+      keydown(e)
+    }
+  }
+
+  function blur (e) {
+    // TODO: this will likely stop working until
+    // https://github.com/Raynos/dom-delegator/pull/4 is fixed
+    var related = e.relatedTarget
+    var notInside = !e.currentTarget.parentNode.parentNode.contains(related)
+
+    if (!related || notInside) {
+      isOpen.set(false)
+    }
+  }
+
+  function keydown (e) {
+    var code = e.keyCode === separator() ? Key.ENTER : e.keyCode
+
+    // prevent default for the following
+    if ([Key.ENTER, Key.DOWN, Key.UP].indexOf(code) !== -1) {
+      e.preventDefault()
+    }
+
+    if (code === Key.ESCAPE) {
+      e.currentTarget.blur()
+    }
+
+    if (code === Key.BACKSPACE) {
+      if (!tree.query()) {
+        tree.channels.pop()
+      }
+    }
+
+    if (code === Key.ENTER) {
+      tree.channels.select(tree.active())
+      tree.query.set('')
+    }
+
+    if (code === Key.DOWN) {
+      tree.channels.next()
+    }
+
+    if (code === Key.UP) {
+      tree.channels.prev()
+    }
+  }
+}
+
+function defaultFilter (opt, query, value) {
+  // keep any that start with __
+  if (opt.value && opt.value.indexOf('__') === 0) return {keep: true}
+
+  // omit value
+  for (var i = value.length - 1; i >= 0; i--) {
+    if (opt.value === value[i].value) {
+      return {keep: false, passes: false, keepChildren: false}
+    }
+  }
+
+  // match query
+  try {
+    var regex = new RegExp(query || '', 'i')
+    return {
+      keepChildren: true,
+      passes: (
+        (opt.value && regex.test(opt.value)) ||
+        (opt.label && regex.test(opt.label))
+      )
+    }
+  } catch (e) {
+    return {passes: false}
   }
 }

@@ -31,7 +31,7 @@ function run () {
         {value: 'delphi-birch', label: 'Delphi "Falcon" Birch', certs: 'V'},
         {value: 'mei-firelli', label: 'Mei "Freaker" Firelli', certs: 'V'},
         {value: 'analy-amante', label: 'Analy "Feline" Amante', certs: 'V'},
-        {value: 'river-brigden', label: 'River "Hiccup" Brigden', certs: 'V'},
+        {value: 'river-brigden', label: 'River "Hiccup" Brigden', certs: 'V'}
       ].sort(sort)
     }, {
       label: 'Raptor ECOs',
@@ -46,7 +46,7 @@ function run () {
     }]
   })
 
-  var remove = hg.app(document.body, comp.state, render)
+  hg.app(document.body, comp.state, render)
 }
 
 function render (state) {
