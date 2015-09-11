@@ -13,6 +13,10 @@ var sendContext = hg.BaseEvent(function contextLambda (ev, broadcast) {
   broadcast(ev)
 })
 
+var sendDataContext = hg.BaseEvent(function contextLambda (ev, broadcast) {
+  broadcast({event: ev, data: this.data})
+})
+
 module.exports = {
   custom: custom,
   'default': render.bind(null, {})
@@ -43,7 +47,7 @@ var templates = {
   },
   textbox: function (state, template) {
     return h('div.background', {
-      'ev-click': sendContext(focusInput)
+      'ev-click': sendContext(state.channels.focusInput)
     }, [
       h('div.list', [
         state.value.map(function (v) { return h('span.listitem', v.label) })
@@ -75,8 +79,7 @@ var templates = {
     return h('div.option', {
       tabIndex: 1000,
       className: option.value && arrayEqual(path, state.active) ? 'focused' : '',
-      'ev-click': hg.sendClick(state.channels.clickOption, path),
-      'ev-event': sendContext(focusOnClick)
+      'ev-click': sendDataContext(state.channels.clickOption, path)
     }, template('optionlabel', option, path))
   },
   optionlabel: function (state, template, option) {
@@ -94,30 +97,8 @@ var templates = {
         width: state.inputWidth + 'px'
       },
 
-      'ev-event': sendContext(state.channels.inputEvent),
-      'ev-input': hg.sendValue(state.channels.setQuery, {})
+      'ev-input': hg.sendValue(state.channels.setQuery, {}),
+      'ev-event': sendContext(state.channels.inputEvent)
     })
   }
-}
-
-function focusInput (ev) {
-  var node = ev.currentTarget
-
-  while (node && !isRootNode(node)) {
-    node = node.parentNode
-  }
-
-  if (node) {
-    node.children[0].children[1].focus()
-  }
-}
-
-function focusOnClick (ev) {
-  if (ev.type === 'click') {
-    focusInput(ev)
-  }
-}
-
-function isRootNode (node) {
-  return node.className.split(/\s/).indexOf('fancy-select') !== -1
 }

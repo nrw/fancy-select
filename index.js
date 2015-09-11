@@ -1,6 +1,7 @@
 var hg = require('mercury')
 var stringWidth = require('styled-string-width')
 var OptionTree = require('option-tree')
+var raf = require('raf')
 
 var render = require('./render')
 
@@ -20,6 +21,8 @@ function FancySelect (data) {
   var placeholder = hg.value(data.placeholder || '')
   var separator = hg.value(data.separator || 188)
   var isOpen = hg.value(false)
+  var selectOnBlur = hg.value(data.selectOnBlur || false)
+  var clearQueryOnSelect = hg.value(data.clearQueryOnSelect || false)
 
   var inputWidth = hg.computed([tree.query, placeholder], function (s1, s2) {
     var el = '.fancy-select input'
@@ -30,8 +33,13 @@ function FancySelect (data) {
 
   return hg.struct({
     channels: {
-      clickOption: function (path) {
-        tree.channels.select(path)
+      clickOption: function (params) {
+        tree.channels.select(params.data)
+
+        if (clearQueryOnSelect()) {
+          tree.query.set('')
+        }
+        focusInput(params.event)
       },
       setQuery: function (data) {
         tree.query.set(data.query)
@@ -39,11 +47,15 @@ function FancySelect (data) {
       next: function () {
         tree.channels.next()
       },
-      inputEvent: inputEvent
+      inputEvent: inputEvent,
+      focusInput: focusInput,
+      focusOnClick: focusOnClick
     },
 
     // local
     isOpen: isOpen,
+    selectOnBlur: selectOnBlur,
+    clearQueryOnSelect: clearQueryOnSelect,
     separator: separator,
 
     placeholder: placeholder,
@@ -80,6 +92,17 @@ function FancySelect (data) {
 
     if (!related || notInside) {
       isOpen.set(false)
+
+      if (selectOnBlur()) {
+        tree.channels.select(tree.active())
+        tree.query.set('')
+      }
+
+      raf(function () {
+        if (related) {
+          related.focus()
+        }
+      })
     }
   }
 
@@ -103,7 +126,10 @@ function FancySelect (data) {
 
     if (code === Key.ENTER) {
       tree.channels.select(tree.active())
-      tree.query.set('')
+      if (clearQueryOnSelect()) {
+        tree.query.set('')
+      }
+      focusInput(e)
     }
 
     if (code === Key.DOWN) {
@@ -112,6 +138,13 @@ function FancySelect (data) {
 
     if (code === Key.UP) {
       tree.channels.prev()
+    }
+
+    // must be open for arrows and backspace
+    if (code === Key.DOWN || code === Key.UP || code === Key.BACKSPACE) {
+      if (!isOpen()) {
+        isOpen.set(true)
+      }
     }
   }
 }
@@ -140,4 +173,28 @@ function defaultFilter (opt, query, value) {
   } catch (e) {
     return {passes: false}
   }
+}
+
+function focusInput (ev) {
+  var node = ev.currentTarget
+
+  while (node && !isRootNode(node)) {
+    node = node.parentNode
+  }
+
+  if (node) {
+    raf(function () {
+      node.children[0].children[1].focus()
+    })
+  }
+}
+
+function focusOnClick (ev) {
+  if (ev.type === 'click') {
+    focusInput(ev)
+  }
+}
+
+function isRootNode (node) {
+  return node.className.split(/\s/).indexOf('fancy-select') !== -1
 }
