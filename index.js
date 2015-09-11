@@ -109,6 +109,11 @@ function FancySelect (data) {
   function keydown (e) {
     var code = e.keyCode === separator() ? Key.ENTER : e.keyCode
 
+    // must be open when accepting keys
+    if (!isOpen()) {
+      isOpen.set(true)
+    }
+
     // prevent default for the following
     if ([Key.ENTER, Key.DOWN, Key.UP].indexOf(code) !== -1) {
       e.preventDefault()
@@ -138,13 +143,6 @@ function FancySelect (data) {
 
     if (code === Key.UP) {
       tree.channels.prev()
-    }
-
-    // must be open for arrows and backspace
-    if (code === Key.DOWN || code === Key.UP || code === Key.BACKSPACE) {
-      if (!isOpen()) {
-        isOpen.set(true)
-      }
     }
   }
 }
