@@ -5,7 +5,7 @@ var raf = require('raf')
 
 var render = require('./render')
 
-var Key = {ENTER: 13, BACKSPACE: 8, UP: 38, DOWN: 40, ESCAPE: 27}
+var Key = {ENTER: 13, BACKSPACE: 8, UP: 38, DOWN: 40, ESCAPE: 27, TAB: 9}
 
 FancySelect.render = render.default
 FancySelect.customRender = render.custom
@@ -39,6 +39,7 @@ function FancySelect (data) {
         if (clearQueryOnSelect()) {
           tree.query.set('')
         }
+
         focusInput(params.event)
       },
       setQuery: function (data) {
@@ -91,12 +92,11 @@ function FancySelect (data) {
     var notInside = !e.currentTarget.parentNode.parentNode.contains(related)
 
     if (!related || notInside) {
-      isOpen.set(false)
-
-      if (selectOnBlur()) {
+      if (isOpen() && selectOnBlur()) {
         tree.channels.select(tree.active())
         tree.query.set('')
       }
+      isOpen.set(false)
 
       raf(function () {
         if (related) {
@@ -110,10 +110,9 @@ function FancySelect (data) {
     var code = e.keyCode === separator() ? Key.ENTER : e.keyCode
 
     // must be open when accepting keys
-    if (!isOpen()) {
+    if (code !== Key.TAB && !isOpen()) {
       isOpen.set(true)
     }
-
     // prevent default for the following
     if ([Key.ENTER, Key.DOWN, Key.UP].indexOf(code) !== -1) {
       e.preventDefault()
