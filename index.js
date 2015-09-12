@@ -110,7 +110,7 @@ function FancySelect (data) {
     var code = e.keyCode === separator() ? Key.ENTER : e.keyCode
 
     // must be open when accepting keys
-    if (code !== Key.TAB && !isOpen()) {
+    if (code !== Key.TAB && code !== Key.ESCAPE && !isOpen()) {
       isOpen.set(true)
     }
     // prevent default for the following
