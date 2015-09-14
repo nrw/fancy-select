@@ -28,7 +28,7 @@ function FancySelect (data) {
     var el = '.fancy-select input'
     var width = Math.max(stringWidth(s1, el), stringWidth(s2, el))
 
-    return width + 10 // hack to fix browser subtleties
+    return width + 20 // hack to fix browser subtleties
   })
 
   return hg.struct({
@@ -119,6 +119,7 @@ function FancySelect (data) {
     }
 
     if (code === Key.ESCAPE) {
+      isOpen.set(false)
       e.currentTarget.blur()
     }
 
