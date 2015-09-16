@@ -92,7 +92,8 @@ function FancySelect (data) {
     var notInside = !e.currentTarget.parentNode.parentNode.contains(related)
 
     if (!related || notInside) {
-      if (isOpen() && selectOnBlur()) {
+      // console.log('related element', related)
+      if (related && isOpen() && selectOnBlur()) {
         tree.channels.select(tree.active())
         tree.query.set('')
       }
