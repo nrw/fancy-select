@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "array-equal": "^1.0.0",
-    "brfs": "^1.2.0",
+    "brfs": "^1.4.1",
     "global": "^4.2.1",
     "insert-css": "^0.2.0",
-    "mercury": "^14.0.0",
+    "mercury": "^14.1.0",
     "option-tree": "^1.1.0",
     "styled-string-width": "^0.1.2"
   },
@@ -30,6 +30,7 @@
     "virtual-hyperscript": "^4.5.0",
     "zuul": "^3.4.0"
   },
+  "license": "MIT",
   "browserify": {
     "transform": [
       "brfs"
