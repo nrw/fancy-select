@@ -4,12 +4,13 @@ browsers:
   - name: chrome
     version: latest
   - name: firefox
-    version: 27..latest
+    version: latest-2
   - name: iphone
     version: latest
   - name: ie
-    version: 9..latest
+    version: latest-2
   - name: opera
+    platform: linux
     version: latest
   - name: safari
     version: latest
