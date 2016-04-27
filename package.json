@@ -1,7 +1,7 @@
 {
   "name": "fancy-select",
   "description": "a unidirectional combobox component based on the aria spec",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "repository": {
     "url": "nrw/fancy-select"
   },
