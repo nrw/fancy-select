@@ -2,6 +2,7 @@ var hg = require('mercury')
 var stringWidth = require('styled-string-width')
 var OptionTree = require('option-tree')
 var raf = require('raf')
+var defined = require('defined')
 
 var render = require('./render')
 
@@ -22,7 +23,7 @@ function FancySelect (data) {
   var separator = hg.value(data.separator || 188)
   var isOpen = hg.value(false)
   var selectOnBlur = hg.value(data.selectOnBlur || false)
-  var clearQueryOnSelect = hg.value(data.clearQueryOnSelect || false)
+  var clearQueryOnSelect = hg.value(defined(data.clearQueryOnSelect, true))
 
   var inputWidth = hg.computed([tree.query, placeholder], function (s1, s2) {
     var el = '.fancy-select input'
@@ -92,7 +93,6 @@ function FancySelect (data) {
     var notInside = !e.currentTarget.parentNode.parentNode.contains(related)
 
     if (!related || notInside) {
-      // console.log('related element', related)
       if (related && isOpen() && selectOnBlur()) {
         tree.channels.select(tree.active())
         tree.query.set('')
