@@ -4,11 +4,11 @@ browsers:
   - name: chrome
     version: latest
   - name: firefox
-    version: latest-2
+    version: latest
   - name: iphone
     version: latest
   - name: ie
-    version: latest-2
+    version: latest
   - name: opera
     platform: linux
     version: latest
